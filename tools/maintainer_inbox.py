@@ -33,7 +33,9 @@ def collect(repo: str, limit: int) -> dict:
     def read(*args: str) -> dict:
         return decode(run([qodo, "read", *args, "--json"]))
 
+    run([qodo, "--version"])
     read("whoami")
+    run([qodo, "tools", "--refresh", "--json"])
     prs = read("codebase", "list-prs", "--repo", repo, "--state", "open", "--max-results", str(limit + 1))
     issues = read("codebase", "list-issues", "--repo", repo, "--state", "open", "--max-results", str(limit + 1))
     pr_rows = prs.get("pull_requests", prs.get("prs", prs.get("changes")))
