@@ -79,7 +79,7 @@ def verify_demo_main(path: Path, evidence: dict) -> dict:
     sha = next(iter(evidence["current_main"].values()))["sha"]
     actual = run(["git", "-C", str(path), "rev-parse", "HEAD"]).strip()
     origin = run(["git", "-C", str(path), "remote", "get-url", "origin"]).strip()
-    if actual != sha or origin != "https://github.com/gvago/oss-maintainer-demo.git" or run(["git", "-C", str(path), "status", "--porcelain"]).strip():
+    if actual != sha or origin.removesuffix(".git") != "https://github.com/gvago/oss-maintainer-demo" or run(["git", "-C", str(path), "status", "--porcelain"]).strip():
         raise ValueError("Verification checkout must be clean demo main at the observed SHA")
     test_env = {k: v for k, v in os.environ.items() if not any(s in k.upper() for s in ("TOKEN", "KEY", "SECRET", "PASSWORD", "CREDENTIAL", "QODO", "ANTHROPIC", "OPENAI", "GITHUB"))}
     tests = subprocess.run(["python3", "-m", "unittest", "discover", "-s", "tests", "-v"], cwd=path, env=test_env, capture_output=True, text=True, timeout=90)
