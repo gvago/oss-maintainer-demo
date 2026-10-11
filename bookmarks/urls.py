@@ -17,4 +17,4 @@ def normalize_url(value: str) -> str:
     authority = f"[{host}]" if ":" in host else host
     if port is not None and (parts.scheme, port) not in {("http", 80), ("https", 443)}:
         authority += f":{port}"
-    return urlunsplit((parts.scheme.lower(), authority, parts.path or "/", parts.query, parts.fragment))
+    return urlunsplit((parts.scheme.lower(), authority, parts.path or "/", "", parts.fragment))
