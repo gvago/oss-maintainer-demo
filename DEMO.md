@@ -80,7 +80,21 @@ full review of the latest commit remains a separate check.
 This proves retrieval of real decisions and review feedback, not automatic Rule Miner
 learning from an artificially short history. No mined rule has been claimed.
 
-## Gate — setup remains pending, do not present as working
+## Gate — request-changes verified; skill attribution still pending
+
+Fresh post-import review examples:
+
+| Example | Result |
+| --- | --- |
+| [#16: readable export](https://github.com/gvago/oss-maintainer-demo/pull/16) | Existing six tests pass, but Qodo finds a disallowed third-party import, alternate URL identity and missing regression coverage. Qodo submitted `CHANGES_REQUESTED` at the reviewed head. Small blast radius; 10–20 minute estimate. |
+| [#17: query stripping](https://github.com/gvago/oss-maintainer-demo/pull/17) | Qodo traces query loss through JSON export and CLI and submits `CHANGES_REQUESTED` at the reviewed head. Medium blast radius; 10–20 minute estimate. |
+| [#18: compliant CSV control](https://github.com/gvago/oss-maintainer-demo/pull/18) | Seven tests pass. Completed exact-head Qodo review returns zero findings and no request-changes review. |
+
+These prove the configured finding-severity request-changes gate with a clean runtime control.
+They do not yet prove that the imported contribution skill produced the findings: #16's
+rule finding cites existing rule 8669, its other findings are generic bugs, and #17's
+query-loss finding is generic. No contribution-skill citation appears in structured evidence.
+Do not present generic detection as skill-attributed enforcement.
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) holds the contribution contract.
 - [skills/oss-contribution-contract/SKILL.md](skills/oss-contribution-contract/SKILL.md)
@@ -92,26 +106,20 @@ learning from an artificially short history. No mined rule has been claimed.
 - [Draft #14](https://github.com/gvago/oss-maintainer-demo/pull/14) drops queries in the shared
   helper, with downstream impact and a failing existing test. Neither draft should merge.
 
-The skill list currently returns no imported skill for this repo. Source files on main and
-an enabled skills agent do not prove ingestion or enforcement. Browser access blocked
-portal import and request-changes configuration during preparation.
+The imported skill is active as Rules enforcement, scoped only to this repository and
+pinned to main commit `5e859a7`. It extracted rules 13611, 13613, 13614 and 13615.
+Rules 13611, 13614 and 13615 are active; 13613 (stdlib-only runtime policy) is inactive.
+Skill usage metrics still report zero invocations/findings after these fresh reviews.
 
-### Complete before showing Gate
+### Remaining validation
 
-1. In the connected Qodo workspace, import rules and skills for **this repository only**.
-2. Verify the skill is present, active, assigned only here, applied as Rules enforcement,
-   and based on the current default-branch revision. Inspect extracted rules/relevance.
-3. Set request-changes for actionable contribution violations using the deployment's actual
-   PR Triage/settings UI. Verify the saved repository scope; do not alter global settings.
-4. Open **fresh fixture-only PRs** from the enabled/ingested base rather than treating the
-   existing drafts as post-ingestion proof. Keep these drafts for reproducible source.
-5. Require a completed exact-head review with the relevant skill attribution/rule IDs,
-   plus an actual GitHub `CHANGES_REQUESTED` review. A red CI check or generic bug is not enough.
-6. Add a matching compliant runtime control; require no spurious contract finding.
-7. If claiming merge blocking, configure and verify GitHub branch protection separately.
+1. Diagnose why active extracted contribution rules did not appear in finding attribution.
+   Do not duplicate the policy in a second rule file or change global settings.
+2. If activating rule 13613, make the repository-only scope and intended severity explicit.
+3. Open a fresh fixture after any effective configuration change and require a structured
+   finding citing the relevant imported rule/skill, followed by a quiet compliant control.
+4. If claiming merge blocking, configure and verify GitHub branch protection separately.
    Request changes alone is not automatic rejection/closure or guaranteed merge blocking.
-
-Do not demo the request-changes gate until these checks pass.
 
 ## Source references
 
