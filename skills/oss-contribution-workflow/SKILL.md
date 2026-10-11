@@ -1,5 +1,5 @@
 ---
-name: oss-contribution-contract
+name: oss-contribution-workflow
 description: "For every pull request, read CONTRIBUTING.md and check the changed code and tests against its applicable contribution guidelines. Skip requirements that the guidelines exempt or that the diff does not affect."
 license: MIT
 metadata:
