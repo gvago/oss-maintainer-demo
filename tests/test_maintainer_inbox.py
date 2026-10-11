@@ -33,7 +33,7 @@ class InboxTests(unittest.TestCase):
             (subprocess.CompletedProcess([], 1, "", "FAILED"), good_repro, False),
             (good_tests, subprocess.CompletedProcess([], 0, '["duplicate", "duplicate"]', ""), False),
         ]:
-            with patch.object(inbox, "run", side_effect=[sha, "https://github.com/gvago/oss-maintainer-demo.git", ""]), patch.object(inbox.subprocess, "run", side_effect=[tests, repro]) as executed:
+            with patch.object(inbox, "run", side_effect=[sha, "https://github.com/gvago/oss-maintainer-demo", ""]), patch.object(inbox.subprocess, "run", side_effect=[tests, repro]) as executed:
                 if passes:
                     self.assertEqual(inbox.verify_demo_main(ROOT, evidence)["status"], "passed")
                     self.assertEqual(executed.call_count, 2)
