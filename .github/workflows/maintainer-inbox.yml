@@ -1,0 +1,48 @@
+name: Maintainer Inbox
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: maintainer-inbox
+  cancel-in-progress: false
+jobs:
+  inbox:
+    if: github.repository == 'gvago/oss-maintainer-demo' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: trusted-main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned analysis tools
+        run: |
+          mkdir -p "$HOME/.qodo/bin"
+          curl -fsSL https://get.qodo.ai/releases/1.4.0/qodo.mjs -o "$HOME/.qodo/bin/qodo.mjs"
+          python3 -c 'import hashlib; from pathlib import Path; p=Path.home()/".qodo/bin/qodo.mjs"; assert hashlib.sha256(p.read_bytes()).hexdigest()=="528d2ccfd29c6d3384326a1b33a6ff9f4596d0296c119d74136abe6f5d3ae0ea"; shim=p.with_name("qodo"); shim.write_text("#!/bin/sh\nexec node "+str(p)+" \"$@\"\n"); shim.chmod(0o755)'
+          npm install --global @anthropic-ai/claude-code@2.1.287
+          echo "$HOME/.qodo/bin" >> "$GITHUB_PATH"
+      - name: Generate fresh proposed actions
+        env:
+          QODO_API_KEY: ${{ secrets.QODO_API_KEY }}
+          QODO_BASE_URL: ${{ secrets.QODO_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.QODO_GATEWAY_KEY }}
+          ANTHROPIC_BASE_URL: https://ai-gateway.qodo.ai
+          ANTHROPIC_MODEL: anthropic/claude-sonnet-4-6
+          CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: '1'
+        run: python3 tools/maintainer_inbox.py --repo "$GITHUB_REPOSITORY" --agent claude --out maintainer-output --verify-demo-main trusted-main
+      - name: Job summary
+        run: python3 -c 'from pathlib import Path; import os; Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(Path("maintainer-output/maintainer-inbox.md").read_text())'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maintainer-inbox
+          path: maintainer-output/
+          if-no-files-found: error
