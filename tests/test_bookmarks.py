@@ -9,6 +9,13 @@ class URLTests(unittest.TestCase):
                          "https://example.com/articles?x=1#intro")
         self.assertEqual(normalize_url("https://example.com"), "https://example.com/")
 
+    def test_default_ports_share_identity(self):
+        for first, second in (("https://example.com:443/a", "https://example.com/a"),
+                              ("http://example.com:80/a", "http://example.com/a"),
+                              ("https://[::1]:443/a", "https://[::1]/a")):
+            self.assertEqual(normalize_url(first), normalize_url(second))
+        self.assertEqual(normalize_url("https://example.com:8443/a"), "https://example.com:8443/a")
+
     def test_invalid_urls(self):
         for value in ("file:///etc/passwd", "javascript:alert(1)", "https:///path",
                       "https://user:pass@example.com", "https://example.com:bad",
