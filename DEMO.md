@@ -69,6 +69,15 @@ Load the official Qodo Codebase Wisdom skill plus
 > Check current main before suggesting an issue is already fixed. Produce maintainer-inbox.md
 > and maintainer-actions.json. Analysis only; do not post, close, merge or rebase.
 
+For this demo, add `--verify-demo-main /path/to/clean/main-worktree` to execute the test
+suite and issue #8 reproduction at the same SHA retrieved through Wisdom. The hosted
+workflow checks out trusted main separately and includes this evidence automatically.
+Never run arbitrary contributor-branch code with analysis credentials.
+
+History indexing occurs on merges. Manual refresh is rate-limited (currently once per
+30 minutes on this deployment); inbox generation does not trigger an index refresh.
+A small merged-history result set does not imply incomplete open-PR discovery.
+
 Merged-history similarity searches merged PRs. Open-PR duplicate comparison is agent reasoning
 using live diffs, not a native automatic PR Triage duplicate detector.
 

@@ -26,6 +26,10 @@ class InboxTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             inbox.validate(packet)
 
+    def test_demo_verification_refuses_other_repositories(self):
+        with self.assertRaises(ValueError):
+            inbox.verify_demo_main(ROOT, {"repo": "other/repo", "current_main": {}})
+
     def test_workflow_is_manual_main_only(self):
         workflow = (ROOT / ".github/workflows/maintainer-inbox.yml").read_text()
         self.assertNotIn('  push:', workflow)

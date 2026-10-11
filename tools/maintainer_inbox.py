@@ -2,6 +2,7 @@
 import argparse
 from datetime import datetime, timezone
 import json
+import os
 from html import escape
 from pathlib import Path
 import re
@@ -71,6 +72,25 @@ def collect(repo: str, limit: int) -> dict:
             "prs": details, "issues": issue_rows, "history": history, "current_main": current}
 
 
+def verify_demo_main(path: Path, evidence: dict) -> dict:
+    """Execute only an explicitly authorized checkout of this owned demo's main."""
+    if evidence["repo"] != "gvago/oss-maintainer-demo" or not evidence["current_main"]:
+        raise ValueError("Demo verification requires current-main source")
+    sha = next(iter(evidence["current_main"].values()))["sha"]
+    actual = run(["git", "-C", str(path), "rev-parse", "HEAD"]).strip()
+    origin = run(["git", "-C", str(path), "remote", "get-url", "origin"]).strip()
+    if actual != sha or origin != "https://github.com/gvago/oss-maintainer-demo.git" or run(["git", "-C", str(path), "status", "--porcelain"]).strip():
+        raise ValueError("Verification checkout must be clean demo main at the observed SHA")
+    test_env = {k: v for k, v in os.environ.items() if not any(s in k.upper() for s in ("TOKEN", "KEY", "SECRET", "PASSWORD", "CREDENTIAL", "QODO", "ANTHROPIC", "OPENAI", "GITHUB"))}
+    tests = subprocess.run(["python3", "-m", "unittest", "discover", "-s", "tests", "-v"], cwd=path, env=test_env, capture_output=True, text=True, timeout=90)
+    if tests.returncode:
+        raise ValueError("Current-main tests failed")
+    reproduction = subprocess.run(["python3", "-m", "bookmarks", "https://example.com:443/docs", "https://example.com/docs"], cwd=path, env=test_env, capture_output=True, text=True, timeout=30)
+    if reproduction.returncode or json.loads(reproduction.stdout) != ["https://example.com/docs"]:
+        raise ValueError("Issue #8 reproduction failed")
+    return {"sha": sha, "issue": 8, "tests_command": "python3 -m unittest discover -s tests -v", "tests_output": tests.stdout + tests.stderr, "reproduction_command": "python3 -m bookmarks https://example.com:443/docs https://example.com/docs", "actual_output": json.loads(reproduction.stdout), "status": "passed"}
+
+
 def validate(packet: dict) -> None:
     if not isinstance(packet.get("repo"), str) or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", packet["repo"]) or not isinstance(packet.get("summary"), str):
         raise ValueError("Missing repo/summary")
@@ -134,6 +154,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=Path("maintainer-output"))
     parser.add_argument("--limit", type=int, default=20)
     parser.add_argument("--collect-only", action="store_true")
+    parser.add_argument("--verify-demo-main", type=Path, help="Explicitly execute tests and issue #8 reproduction in a trusted clean demo-main checkout")
     parser.add_argument("--render", type=Path, help="Validate/render an existing packet without network or model calls")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
@@ -143,6 +164,8 @@ def main() -> None:
         if not 1 <= args.limit <= 199:
             parser.error("limit must be 1–199")
         evidence = collect(args.repo, args.limit)
+        if args.verify_demo_main:
+            evidence["behavior_verification"] = verify_demo_main(args.verify_demo_main, evidence)
         (args.out / "evidence.json").write_text(json.dumps(evidence, indent=2) + "\n")
         if args.collect_only:
             return

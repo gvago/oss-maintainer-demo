@@ -15,6 +15,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: trusted-main
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -33,7 +38,7 @@ jobs:
           ANTHROPIC_BASE_URL: https://ai-gateway.qodo.ai
           ANTHROPIC_MODEL: anthropic/claude-sonnet-4-6
           CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS: '1'
-        run: python3 tools/maintainer_inbox.py --repo "$GITHUB_REPOSITORY" --agent claude --out maintainer-output
+        run: python3 tools/maintainer_inbox.py --repo "$GITHUB_REPOSITORY" --agent claude --out maintainer-output --verify-demo-main trusted-main
       - name: Job summary
         run: python3 -c 'from pathlib import Path; import os; Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(Path("maintainer-output/maintainer-inbox.md").read_text())'
       - uses: actions/upload-artifact@v4
