@@ -48,6 +48,14 @@ class CLITests(unittest.TestCase):
         result = subprocess.run([sys.executable, "-m", "bookmarks", "--format", "csv", "HTTPS://Example.com"], capture_output=True, text=True, check=True)
         self.assertEqual(list(csv.reader(io.StringIO(result.stdout))), [["url"], ["https://example.com/"]])
 
+    def test_csv_cli_uses_utf8_output(self):
+        import os
+        import subprocess
+        import sys
+        result = subprocess.run([sys.executable, "-m", "bookmarks", "--format", "csv", "https://example.com/café"], env={**os.environ, "PYTHONIOENCODING": "ascii"}, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.decode("utf-8"), "url\r\nhttps://example.com/café\r\n")
+
     def test_cli_exports_json(self):
         import json
         import subprocess
