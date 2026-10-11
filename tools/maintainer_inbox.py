@@ -47,6 +47,8 @@ def collect(repo: str, limit: int) -> dict:
     details = []
     for pr in pr_rows:
         detail = read("codebase", "get-pr", "--repo", repo, "--number", str(pr["number"]))
+        if "change" not in detail or "diff" not in detail:
+            raise ValueError(f"PR #{pr['number']} returned unsupported envelope keys {list(detail)}; code={detail.get('code', detail.get('error_code', 'unknown'))}")
         details.append({k: detail[k] for k in ("change", "diff")})
     history = []
     for issue in issue_rows:
