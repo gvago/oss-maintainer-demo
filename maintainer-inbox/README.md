@@ -46,7 +46,8 @@ PR stacks involving independent contributors require coordination, not blind for
 
 ## Verification boundary
 
-Live Qodo context collection and local rendering/tests have run. The sample report was authored
+Live Qodo context collection and local rendering have run.
+`python3 -m unittest discover -s tests -v` returned 8 tests passed, zero failures. The sample report was authored
 by Hermes, not fabricated as Claude/Codex output. Headless Claude/Codex generation and the
 GitHub Action have not yet been exercised on a configured inference/CI host. Do not call that
 hosted automation live until a real run returns valid artifacts.

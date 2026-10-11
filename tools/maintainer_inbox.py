@@ -72,6 +72,8 @@ def validate(packet: dict) -> None:
             prefix = f"https://github.com/{packet['repo']}/"
             if not isinstance(url, str) or not url.startswith(prefix) or not re.fullmatch(r"(?:issues|pull)/[1-9][0-9]*", url[len(prefix):]):
                 raise ValueError("Target outside repository or malformed")
+        if any("/pull/" in url and url not in action["pr_heads"] for url in action["targets"]):
+            raise ValueError("Missing observed PR head")
         for sha in action["pr_heads"].values():
             if not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha):
                 raise ValueError("Invalid PR head SHA")

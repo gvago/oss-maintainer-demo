@@ -9,5 +9,8 @@ For each action supply a stable ID, type, target URLs, rationale, source-linked 
 uncertainty, draft response, and observed PR-head SHA map. Every action is proposed,
 not approved or applied. Preserve contributors' work; do not recommend automatic rebase
 of independently authored branches. Missing source coverage must be stated.
+Merged history alone cannot establish that an issue is fixed on current main. Without
+current-main source or behavior evidence, use request_followup and explicitly require
+verification; never recommend closing as already_fixed.
 Do not claim merged-history similarity can search open PRs. Rank by dependency order,
 blast radius and actual blockers, without fabricated time-savings claims.

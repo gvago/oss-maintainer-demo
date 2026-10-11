@@ -58,9 +58,9 @@ Draft reply:
 
 Observed PR heads: `{"https://github.com/gvago/oss-maintainer-demo/pull/11": "b9dab92614d3b0c4e7fb61531110d54bf10e6694", "https://github.com/gvago/oss-maintainer-demo/pull/12": "41bd59c16d4a37fecf3367e24119e8c6b32c3eb7"}`
 
-## A4 · already_fixed
+## A4 · request_followup
 
-Default HTTP/HTTPS port normalization landed in merged #2; the later report describes that same problem.
+Merged history suggests #8 may already be fixed; current-main verification is required before any closure.
 
 Targets: https://github.com/gvago/oss-maintainer-demo/issues/8, https://github.com/gvago/oss-maintainer-demo/pull/2
 
@@ -74,7 +74,7 @@ Draft reply:
 
 > This appears fixed by #2. Please test current main: https://example.com:443/docs and https://example.com/docs now normalize to the same bookmark. If still reproducible, share the revision and inputs.
 
-Observed PR heads: `{}`
+Observed PR heads: `{"https://github.com/gvago/oss-maintainer-demo/pull/2": "54ac9781debd644fd987806f83082359d8d6ee0b"}`
 
 ## A5 · request_followup
 
@@ -110,7 +110,7 @@ Draft reply:
 
 > Track #5 with #11 and #6 with #12; neither issue should close before its corresponding PR merges.
 
-Observed PR heads: `{}`
+Observed PR heads: `{"https://github.com/gvago/oss-maintainer-demo/pull/11": "b9dab92614d3b0c4e7fb61531110d54bf10e6694", "https://github.com/gvago/oss-maintainer-demo/pull/12": "41bd59c16d4a37fecf3367e24119e8c6b32c3eb7"}`
 
 ## A7 · demo_control
 
