@@ -49,8 +49,13 @@ def collect(repo: str, limit: int) -> dict:
     for issue in issue_rows:
         found = read("pull-request", "similar", "--repo", repo, "--query", issue["title"])
         history.append({"issue": issue["number"], "result": found})
+    current = {}
+    for path in ("bookmarks/urls.py", "bookmarks/exports.py", "bookmarks/__main__.py"):
+        # ponytail: demo source paths; interactive skill selects relevant paths for other repos.
+        if repo == "gvago/oss-maintainer-demo":
+            current[path] = read("codebase", "read-file", "--repo", repo, "--path", path, "--ref", "main", "--refresh")
     return {"repo": repo, "observed_at": datetime.now(timezone.utc).isoformat(),
-            "prs": details, "issues": issue_rows, "history": history}
+            "prs": details, "issues": issue_rows, "history": history, "current_main": current}
 
 
 def validate(packet: dict) -> None:
