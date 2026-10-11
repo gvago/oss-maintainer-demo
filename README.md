@@ -21,3 +21,11 @@ URLs without a path use `/`. Credentials, non-HTTP(S) schemes, whitespace and
 invalid ports are rejected. The toolkit does not fetch URLs or promise that a host exists.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before sending a PR.
+
+## Quickstart example
+
+Pass multiple URLs to export them as a stable first-seen JSON list:
+
+```sh
+python3 -m bookmarks https://example.com/docs https://example.com/news
+```
