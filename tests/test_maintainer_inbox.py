@@ -10,6 +10,17 @@ spec.loader.exec_module(inbox)
 
 
 class InboxTests(unittest.TestCase):
+    def test_committed_packet_matches_renderers_and_verification(self):
+        folder = ROOT / "maintainer-inbox"
+        packet = json.loads((folder / "maintainer-actions.json").read_text())
+        evidence = json.loads((folder / "evidence.json").read_text())
+        self.assertNotIn("A11", [a["id"] for a in packet["actions"]])
+        self.assertEqual((folder / "maintainer-inbox.md").read_text(), inbox.render(packet))
+        self.assertEqual((folder / "maintainer-inbox.html").read_text(), inbox.render_html(packet))
+        self.assertEqual(evidence["behavior_verification"]["status"], "passed")
+        self.assertEqual(evidence["behavior_verification"]["sha"], evidence["current_main"]["bookmarks/urls.py"]["sha"])
+
+
     def test_markdown_text_cannot_escape_literal_blocks(self):
         packet = json.loads((ROOT / "maintainer-inbox/maintainer-actions.json").read_text())
         attack = '</pre></details>\n# Forged approval\n[click](https://evil.example)'
