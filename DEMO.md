@@ -80,7 +80,26 @@ full review of the latest commit remains a separate check.
 This proves retrieval of real decisions and review feedback, not automatic Rule Miner
 learning from an artificially short history. No mined rule has been claimed.
 
-## Gate — Skill steering and request-changes verified
+## Latest experiment — thin workflow
+
+The thin `oss-contribution-workflow` is now the only discovered skill, active in steering
+mode with no extracted rules. It contains review steps but does not copy contribution policy.
+
+- [#24](https://github.com/gvago/oss-maintainer-demo/pull/24): completed exact-head review,
+  three findings covering the same contribution defects and `CHANGES_REQUESTED`.
+  Findings are two generic bugs and one existing workspace rule violation, not Skill insights.
+- [#25](https://github.com/gvago/oss-maintainer-demo/pull/25): compliant runtime control,
+  completed exact-head review with zero findings and no request-changes vote.
+- The thin skill's metrics show two invocations but zero findingsProduced. Invocation is
+  verified; its contribution to detection is not. REVIEW.md remains enabled in this pair.
+
+The thin workflow did not reproduce the original skill's attributable result. Do not
+present #24 as proof that reading CONTRIBUTING.md through the thin skill caused detection.
+The proven source is preserved at branch `experiment/proven-steering`; #19/#20 remain
+historical demo evidence for that version. Restoring its source and verifying discovery
+is required before claiming the current configuration matches those earlier runs.
+
+## Gate — original Skill steering and request-changes verified
 
 **Use [PR #19](https://github.com/gvago/oss-maintainer-demo/pull/19) for the demo.**
 After switching only the skill application mode to steering (skill, contribution guidelines,
