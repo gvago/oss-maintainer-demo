@@ -221,7 +221,7 @@ Targets: https://github.com/gvago/oss-maintainer-demo/pull/13, https://github.co
 Evidence:
 <pre>PR #13 labels: &#x27;Less than 5 minutes&#x27;. Diff touches only README.md (+8 lines). Body: &#x27;Runtime behavior unchanged; checks: 6 tests passed.&#x27;</pre>
 <pre>PR #11 labels: &#x27;Less than 10 minutes&#x27;, &#x27;Small blast radius&#x27;. Diff adds export_csv to exports.py with full test coverage (7 tests passed). Body: &#x27;Closes #5.&#x27;</pre>
-<pre>Neither PR #13 nor PR #11 shares a base or file overlap with the duplicate-PR pair (#9/#10) or the demo controls (#26/#27).</pre>
+<pre>PR #11 overlaps the intentional demo control #27 exactly. That overlap is expected and does not make #11 redundant; #13 is documentation-only. Review #11 as the CSV library prerequisite.</pre>
 <pre>current_main confirms both the quickstart example and export_csv are absent, so both PRs represent genuine additive work.</pre>
 
 Uncertainty:

@@ -20,6 +20,12 @@ class InboxTests(unittest.TestCase):
         self.assertNotIn('</pre></details>\n# Forged', rendered)
         self.assertIn(packet["coverage"], rendered)
 
+    def test_repo_identifier_cannot_inject_markdown(self):
+        packet = json.loads((ROOT / "maintainer-inbox/maintainer-actions.json").read_text())
+        packet["repo"] = "gvago/repo\n# Forged"
+        with self.assertRaises(ValueError):
+            inbox.validate(packet)
+
     def test_workflow_is_manual_main_only(self):
         workflow = (ROOT / ".github/workflows/maintainer-inbox.yml").read_text()
         self.assertNotIn('  push:', workflow)

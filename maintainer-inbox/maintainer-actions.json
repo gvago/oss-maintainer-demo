@@ -194,7 +194,7 @@
       "evidence": [
         "PR #13 labels: 'Less than 5 minutes'. Diff touches only README.md (+8 lines). Body: 'Runtime behavior unchanged; checks: 6 tests passed.'",
         "PR #11 labels: 'Less than 10 minutes', 'Small blast radius'. Diff adds export_csv to exports.py with full test coverage (7 tests passed). Body: 'Closes #5.'",
-        "Neither PR #13 nor PR #11 shares a base or file overlap with the duplicate-PR pair (#9/#10) or the demo controls (#26/#27).",
+        "PR #11 overlaps the intentional demo control #27 exactly. That overlap is expected and does not make #11 redundant; #13 is documentation-only. Review #11 as the CSV library prerequisite.",
         "current_main confirms both the quickstart example and export_csv are absent, so both PRs represent genuine additive work."
       ],
       "uncertainty": "Low for PR #13 (docs only). Low-medium for PR #11: its export_csv diff is reproduced verbatim in demo-control PR #27, but PR #11 predates #27 and is on a non-experiment branch (feat/csv-library), confirming it is the intended production implementation.",

@@ -72,7 +72,7 @@ def collect(repo: str, limit: int) -> dict:
 
 
 def validate(packet: dict) -> None:
-    if not isinstance(packet.get("repo"), str) or not isinstance(packet.get("summary"), str):
+    if not isinstance(packet.get("repo"), str) or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", packet["repo"]) or not isinstance(packet.get("summary"), str):
         raise ValueError("Missing repo/summary")
     if not isinstance(packet.get("actions"), list) or not isinstance(packet.get("gaps"), list):
         raise ValueError("Missing actions/gaps")
@@ -160,7 +160,7 @@ def main() -> None:
         if packet.get("repo") != args.repo:
             raise ValueError("Agent changed repository identity")
     evidence_path = args.out / "evidence.json"
-    if evidence_path.exists():
+    if not args.render and evidence_path.exists():
         observed = decode(evidence_path.read_text())
         packet["coverage"] = f"{len(observed['prs'])} open PRs · {len(observed['issues'])} open issues · Observed {observed['observed_at']}"
     report = render(packet)
