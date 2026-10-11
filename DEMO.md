@@ -86,12 +86,20 @@ No bulk-close or automatic rebase script is included.
 
 [The manual workflow](.github/workflows/maintainer-inbox.yml) runs the same collector/generator,
 adds a job summary and uploads the evidence, Markdown and JSON as an artifact.
-It currently requires a dedicated self-hosted runner labelled `maintainer-inbox`, with Qodo
-and Claude already authenticated. Run only trusted default-branch jobs on that runner.
+It runs on GitHub-hosted Ubuntu with pinned Qodo/Claude versions. Configure encrypted
+repository secrets `QODO_API_KEY`, `QODO_BASE_URL` and `QODO_GATEWAY_KEY` for this
+Qodo-gateway configuration. Adapt the inference endpoint/model for your approved provider.
 Choose **Actions → Maintainer Inbox → Run workflow** after merging the workflow to main.
+Every trigger collects fresh evidence; no schedule is enabled. A temporary integration-branch
+push trigger exercises this repository before merge; remove it when adopting the workflow.
+Do not add pull_request_target or fork-controlled execution to a credential-bearing job.
 
-No runner is registered by copying these files. A GitHub-hosted variant requires approved
-installation and encrypted Qodo/provider credentials; do not put tokens in source or prompts.
+The GitHub job summary has collapsible recommendations. Download the `maintainer-inbox`
+artifact and open `maintainer-inbox.html` for colored cards, filters, expandable evidence
+and copy-reply buttons. GitHub's Markdown renderer sanitizes HTML and does not run arbitrary
+CSS/JavaScript; standalone HTML is not an interactive GitHub code-file preview.
+GitHub Pages can serve the HTML as a website, but this workflow does not publish it there.
+Actions remain proposals: source links and copy buttons do not close issues or merge PRs.
 
 ## Verify your setup
 

@@ -48,7 +48,7 @@ def collect(repo: str, limit: int) -> dict:
     for pr in pr_rows:
         detail = read("codebase", "get-pr", "--repo", repo, "--number", str(pr["number"]))
         if detail.get("qar_operation_result_truncated"):
-            detail = read("codebase", "get-pr", "--repo", repo, "--number", str(pr["number"]), "--include-diff", "false")
+            detail = read("codebase", "get-pr", "--repo", repo, "--number", str(pr["number"]), "--args", '{"include_diff":false}')
             detail["diff"] = {"unavailable": "Combined diff exceeds upstream byte limit; do not classify as duplicate or complete implementation."}
         if "change" not in detail or "diff" not in detail:
             raise ValueError(f"PR #{pr['number']} returned unsupported envelope keys {list(detail)}; code={detail.get('code', detail.get('error_code', 'unknown'))}")
