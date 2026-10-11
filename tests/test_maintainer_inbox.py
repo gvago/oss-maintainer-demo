@@ -2,6 +2,8 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
+from unittest.mock import patch
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("inbox", ROOT / "tools/maintainer_inbox.py")
@@ -20,6 +22,28 @@ class InboxTests(unittest.TestCase):
         self.assertEqual(evidence["behavior_verification"]["status"], "passed")
         self.assertEqual(evidence["behavior_verification"]["sha"], evidence["current_main"]["bookmarks/urls.py"]["sha"])
 
+
+    def test_verification_executes_checks_and_rejects_failures(self):
+        sha = "a" * 40
+        evidence = {"repo": "gvago/oss-maintainer-demo", "current_main": {"bookmarks/urls.py": {"sha": sha}}}
+        good_tests = subprocess.CompletedProcess([], 0, "", "Ran 6 tests\nOK")
+        good_repro = subprocess.CompletedProcess([], 0, '["https://example.com/docs"]', "")
+        for tests, repro, passes in [
+            (good_tests, good_repro, True),
+            (subprocess.CompletedProcess([], 1, "", "FAILED"), good_repro, False),
+            (good_tests, subprocess.CompletedProcess([], 0, '["duplicate", "duplicate"]', ""), False),
+        ]:
+            with patch.object(inbox, "run", side_effect=[sha, "https://github.com/gvago/oss-maintainer-demo.git", ""]), patch.object(inbox.subprocess, "run", side_effect=[tests, repro]) as executed:
+                if passes:
+                    self.assertEqual(inbox.verify_demo_main(ROOT, evidence)["status"], "passed")
+                    self.assertEqual(executed.call_count, 2)
+                else:
+                    with self.assertRaises(ValueError):
+                        inbox.verify_demo_main(ROOT, evidence)
+        with patch.object(inbox, "run", side_effect=[sha, "https://github.com/gvago/oss-maintainer-demo.git", " M changed.py"]), patch.object(inbox.subprocess, "run") as executed:
+            with self.assertRaises(ValueError):
+                inbox.verify_demo_main(ROOT, evidence)
+            executed.assert_not_called()
 
     def test_markdown_text_cannot_escape_literal_blocks(self):
         packet = json.loads((ROOT / "maintainer-inbox/maintainer-actions.json").read_text())
