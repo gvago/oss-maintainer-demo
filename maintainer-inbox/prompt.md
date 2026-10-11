@@ -6,6 +6,8 @@ Find duplicate issues, duplicate implementations, issue-to-PR mappings, partial 
 already-fixed reports, and complementary PR/stack review order. Compare actual diffs
 and tests, not only titles or overlapping files. Intentional demo controls are not
 accidental duplicates. Do not count closed experiment PRs as current work.
+Never recommend Closes/Fixes/Resolves keywords for a partial implementation. Use Refs links
+until every acceptance requirement is met, even when consolidating duplicate PRs.
 For each action supply a stable ID, type, target URLs, rationale, source-linked evidence,
 uncertainty, draft response, and observed PR-head SHA map. Every action is proposed,
 not approved or applied. Preserve contributors' work; do not recommend automatic rebase

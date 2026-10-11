@@ -16,7 +16,7 @@
         "PR #9 (refs #3) and PR #10 (refs #4) both add the identical strip_fragment=False parameter to normalize_url, confirming the two issues drive duplicate work."
       ],
       "uncertainty": "Both issues are authored by gvago and may be intentional demo fixtures modeling a near-duplicate scenario. If so, they should remain open as demo controls. Maintainer confirmation required before closing either.",
-      "draft": "Issues #3 and #4 both describe the same feature: an opt-in `strip_fragment` parameter on the shared normalizer. We already have two separate PRs implementing it (#9 refs #3, #10 refs #4). Could you confirm whether one of these should be closed as a duplicate, or whether both are intentional demo fixtures to be kept open? Once confirmed, we will close the duplicate and update the surviving PR with a 'Closes' keyword.",
+      "draft": "PRs #9/#10 implement only the normalizer option. Keep Refs #3/#4 links; do not add closure keywords until exporter/CLI propagation and end-to-end tests satisfy the full issue. Consolidation requires maintainer approval and preservation of contributor credit.",
       "pr_heads": {
         "https://github.com/gvago/oss-maintainer-demo/pull/9": "ddb9ea26e5f16da5074123c0b8e4ad4ccd92b96e",
         "https://github.com/gvago/oss-maintainer-demo/pull/10": "67a58c07cb73721b1d8ce0b04742e185a1fd7712"
@@ -37,7 +37,7 @@
         "Both share base_commit e565ba08587117166a9ba46e00d211879fc55857 and target branch main."
       ],
       "uncertainty": "PR #9 references issue #3 and PR #10 references issue #4. If those issues are intentional demo fixtures (see A1), these PRs may also be intentional demo controls. Confirm with A1 before closing either. Do not rebase the unselected branch automatically; preserve independently authored work.",
-      "draft": "Thanks for both contributions! PRs #9 and #10 implement the same `strip_fragment` parameter on `normalize_url` with functionally identical diffs \u2014 only a minor style difference (inline conditional vs. local variable). To avoid a double-apply, one should be closed before merging. Could you confirm which to keep, or whether both are intentional demo fixtures? The surviving PR should add a 'Closes' keyword for the surviving issue once A1 is resolved.",
+      "draft": "PRs #9/#10 implement only the normalizer option. Keep Refs #3/#4 links; do not add closure keywords until exporter/CLI propagation and end-to-end tests satisfy the full issue. Consolidation requires maintainer approval and preservation of contributor credit.",
       "pr_heads": {
         "https://github.com/gvago/oss-maintainer-demo/pull/9": "ddb9ea26e5f16da5074123c0b8e4ad4ccd92b96e",
         "https://github.com/gvago/oss-maintainer-demo/pull/10": "67a58c07cb73721b1d8ce0b04742e185a1fd7712"
@@ -131,7 +131,7 @@
         "https://github.com/gvago/oss-maintainer-demo/pull/9",
         "https://github.com/gvago/oss-maintainer-demo/pull/10"
       ],
-      "rationale": "PR #9 references issue #3 and PR #10 references issue #4. Both issue-PR pairs address the same opt-in fragment-stripping feature. All four are linked here for visibility pending the duplicate resolution in A1 and A2. Once a surviving issue and PR are chosen, the survivor should carry a 'Closes' keyword and the duplicates should be closed.",
+      "rationale": "Link #9 to #3 and #10 to #4 using Refs. Both implement only the helper slice; consolidation does not complete the export/CLI requirements, so keep the canonical issue open.",
       "evidence": [
         "PR #9 body: 'Refs #3. Add opt-in strip_fragment to the shared normalizer without changing defaults.'",
         "PR #10 body: 'Refs #4. Add opt-in fragment-free normalization; preserve existing behavior by default.'",
@@ -139,7 +139,7 @@
         "Issues #3 and #4 flagged as duplicates in A1; PRs #9 and #10 flagged as duplicate implementations in A2."
       ],
       "uncertainty": "Resolution fully depends on A1 and A2 outcomes. No link update should be made until the duplicate determination is confirmed.",
-      "draft": "Issues #3 and #4 are both addressed by PRs #9 and #10 respectively via 'Refs' links, but neither carries a 'Closes' keyword. These are flagged as likely duplicates (A1, A2). Once the surviving issue and PR are identified, please update the survivor with 'Closes #N' and close the duplicate issue and PR.",
+      "draft": "PRs #9/#10 implement only the normalizer option. Keep Refs #3/#4 links; do not add closure keywords until exporter/CLI propagation and end-to-end tests satisfy the full issue. Consolidation requires maintainer approval and preservation of contributor credit.",
       "pr_heads": {
         "https://github.com/gvago/oss-maintainer-demo/pull/9": "ddb9ea26e5f16da5074123c0b8e4ad4ccd92b96e",
         "https://github.com/gvago/oss-maintainer-demo/pull/10": "67a58c07cb73721b1d8ce0b04742e185a1fd7712"
@@ -212,5 +212,6 @@
     "Wisdom history search returned only a single candidate PR (PR #2) for every open issue, suggesting the similarity search may not have been exhaustive across all open PRs.",
     "PRs #9 and #10 only unit-test normalize_url directly; no PR verifies that export_json, export_csv, or the CLI correctly propagate strip_fragment=True end-to-end.",
     "Issues #3, #4, and PRs #9, #10 may be intentional demo fixtures (authored by the repo owner) rather than accidental duplicates \u2014 the duplicate classification in A1 and A2 requires maintainer confirmation before any closure."
-  ]
+  ],
+  "coverage": "8 open PRs \u00b7 6 open issues \u00b7 Observed 2026-10-11T17:08:36.539411+00:00"
 }

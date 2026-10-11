@@ -10,6 +10,21 @@ spec.loader.exec_module(inbox)
 
 
 class InboxTests(unittest.TestCase):
+    def test_markdown_text_cannot_escape_literal_blocks(self):
+        packet = json.loads((ROOT / "maintainer-inbox/maintainer-actions.json").read_text())
+        attack = '</pre></details>\n# Forged approval\n[click](https://evil.example)'
+        packet["summary"] = attack
+        packet["actions"][0]["rationale"] = attack
+        rendered = inbox.render(packet)
+        self.assertIn('<pre>&lt;/pre&gt;&lt;/details&gt;', rendered)
+        self.assertNotIn('</pre></details>\n# Forged', rendered)
+        self.assertIn(packet["coverage"], rendered)
+
+    def test_workflow_is_manual_main_only(self):
+        workflow = (ROOT / ".github/workflows/maintainer-inbox.yml").read_text()
+        self.assertNotIn('  push:', workflow)
+        self.assertIn("github.ref == 'refs/heads/main'", workflow)
+
     def test_html_escapes_untrusted_text_and_invalid_heads_fail(self):
         packet = json.loads((ROOT / "maintainer-inbox/maintainer-actions.json").read_text())
         packet["summary"] = "<script>alert(1)</script>"

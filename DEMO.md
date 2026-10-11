@@ -90,8 +90,8 @@ It runs on GitHub-hosted Ubuntu with pinned Qodo/Claude versions. Configure encr
 repository secrets `QODO_API_KEY`, `QODO_BASE_URL` and `QODO_GATEWAY_KEY` for this
 Qodo-gateway configuration. Adapt the inference endpoint/model for your approved provider.
 Choose **Actions → Maintainer Inbox → Run workflow** after merging the workflow to main.
-Every trigger collects fresh evidence; no schedule is enabled. A temporary integration-branch
-push trigger exercises this repository before merge; remove it when adopting the workflow.
+Every manual trigger collects fresh evidence; no schedule or push trigger is enabled.
+Execution is restricted to main, preventing dispatch of contributor-branch code with secrets.
 Do not add pull_request_target or fork-controlled execution to a credential-bearing job.
 
 The GitHub job summary has collapsible recommendations. Download the `maintainer-inbox`

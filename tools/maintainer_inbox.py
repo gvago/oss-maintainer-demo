@@ -101,12 +101,15 @@ def validate(packet: dict) -> None:
 
 def render(packet: dict) -> str:
     validate(packet)
-    lines = ["# Maintainer Inbox", "", packet["summary"], "", "All actions below are proposed, not approved or applied.", ""]
+    def literal(text: str) -> str:
+        return "<pre>" + escape(text) + "</pre>"
+
+    lines = ["# Maintainer Inbox", "", literal(packet.get("coverage", "Coverage unavailable for this legacy packet.")), "", literal(packet["summary"]), "", "All actions below are proposed, not approved or applied.", ""]
     for a in packet["actions"]:
-        lines += [f"<details><summary>{escape(a['id'])} · {escape(a['type'])}</summary>", "", a["rationale"], "", "Targets: " + ", ".join(a["targets"]), "", "Evidence:"]
-        lines += ["- " + e for e in a["evidence"]]
-        lines += ["", "Uncertainty: " + a["uncertainty"], "", "Draft reply:", "", "> " + a["draft"].replace("\n", "\n> "), "", "Observed PR heads: `" + json.dumps(a["pr_heads"], sort_keys=True) + "`", "", "</details>", ""]
-    lines += ["## Data gaps", ""] + ["- " + gap for gap in packet["gaps"]]
+        lines += [f"<details><summary>{escape(a['id'])} · {escape(a['type'])}</summary>", "", literal(a["rationale"]), "", "Targets: " + ", ".join(a["targets"]), "", "Evidence:"]
+        lines += [literal(e) for e in a["evidence"]]
+        lines += ["", "Uncertainty:", literal(a["uncertainty"]), "", "Draft reply:", literal(a["draft"]), "", "Observed PR heads:", literal(json.dumps(a["pr_heads"], sort_keys=True)), "", "</details>", ""]
+    lines += ["## Data gaps", ""] + [literal(gap) for gap in packet["gaps"]]
     return "\n".join(lines) + "\n"
 
 
@@ -121,7 +124,7 @@ def render_html(packet: dict) -> str:
     filters = '<button data-filter="all" aria-pressed="true">All</button>' + "".join(f'<button data-filter="{escape(k)}" aria-pressed="false">{escape(k.replace("_", " "))}</button>' for k in kinds)
     gaps = "".join("<li>" + escape(g) + "</li>" for g in packet["gaps"])
     return """<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Maintainer inbox</title>
-<style>body{background:#f5f6f9;color:#202936;font:16px/1.55 system-ui;margin:0}main{max-width:1060px;margin:40px auto;padding:0 24px}h1{font-size:42px;letter-spacing:-1.5px;margin:4px 0}header{border-left:5px solid #6b46c1;padding-left:22px}.eyebrow{color:#6344a1;text-transform:uppercase;letter-spacing:2px;font-size:12px;font-weight:700}nav{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0}button{font:inherit;border:1px solid #cbd0da;background:white;color:#283446;border-radius:7px;padding:8px 12px;cursor:pointer}button[aria-pressed=true]{background:#3f2a70;color:white}details{background:white;border:1px solid #d9dee7;border-radius:10px;margin:12px 0;overflow:hidden}summary{cursor:pointer;padding:18px}.badge{color:#4b3979;background:#f0eafa;border-radius:5px;padding:4px 8px;font-size:12px;text-transform:uppercase;margin-right:10px}.links{float:right;font-size:14px}a{color:#31559b}.body{padding:0 22px 22px;border-top:1px solid #e5e8ee}h3{font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-top:24px}.uncertain{border-left:3px solid #c48931;padding-left:14px;color:#65502f}pre{white-space:pre-wrap;font:inherit;background:#f7f8fb;border:1px solid #e5e8ee;padding:16px;border-radius:8px}small{display:block;margin-top:18px;overflow-wrap:anywhere;color:#647084}.notice{color:#647084}li{margin-bottom:8px}@media(max-width:650px){.links{float:none;display:block;margin-top:10px}h1{font-size:32px}main{padding:0 16px}}</style><main><header><div class="eyebrow">Maintainer decision packet</div><h1>Less backlog. Clear next steps.</h1><p>""" + escape(packet["repo"]) + "</p><p>" + escape(packet["summary"]) + '</p><p class="notice">Proposed only · No changes applied · Refresh evidence before acting</p></header><nav aria-label="Filter recommendations">' + filters + '</nav>' + "".join(cards) + '<details><summary>Data gaps &amp; limitations</summary><div class="body"><ul>' + gaps + "</ul></div></details></main>" + """<script>document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.querySelectorAll('[data-kind]').forEach(d=>d.hidden=b.dataset.filter!=='all'&&d.dataset.kind!==b.dataset.filter)}));document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(b.parentElement.querySelector('pre').textContent);b.nextElementSibling.textContent='Copied'}catch(e){b.nextElementSibling.textContent='Select the reply above to copy'}}));</script></html>"""
+<style>body{background:#f5f6f9;color:#202936;font:16px/1.55 system-ui;margin:0}main{max-width:1060px;margin:40px auto;padding:0 24px}h1{font-size:42px;letter-spacing:-1.5px;margin:4px 0}header{border-left:5px solid #6b46c1;padding-left:22px}.eyebrow{color:#6344a1;text-transform:uppercase;letter-spacing:2px;font-size:12px;font-weight:700}nav{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0}button{font:inherit;border:1px solid #cbd0da;background:white;color:#283446;border-radius:7px;padding:8px 12px;cursor:pointer}button[aria-pressed=true]{background:#3f2a70;color:white}details{background:white;border:1px solid #d9dee7;border-radius:10px;margin:12px 0;overflow:hidden}summary{cursor:pointer;padding:18px}.badge{color:#4b3979;background:#f0eafa;border-radius:5px;padding:4px 8px;font-size:12px;text-transform:uppercase;margin-right:10px}.links{float:right;font-size:14px}a{color:#31559b}.body{padding:0 22px 22px;border-top:1px solid #e5e8ee}h3{font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-top:24px}.uncertain{border-left:3px solid #c48931;padding-left:14px;color:#65502f}pre{white-space:pre-wrap;font:inherit;background:#f7f8fb;border:1px solid #e5e8ee;padding:16px;border-radius:8px}small{display:block;margin-top:18px;overflow-wrap:anywhere;color:#647084}.notice{color:#647084}li{margin-bottom:8px}@media(max-width:650px){.links{float:none;display:block;margin-top:10px}h1{font-size:32px}main{padding:0 16px}}</style><main><header><div class="eyebrow">Maintainer decision packet</div><h1>Less backlog. Clear next steps.</h1><p>""" + escape(packet["repo"]) + "</p><p>" + escape(packet.get("coverage", "Coverage unavailable")) + "</p><p>" + escape(packet["summary"]) + '</p><p class="notice">Proposed only · No changes applied · Refresh evidence before acting</p></header><nav aria-label="Filter recommendations">' + filters + '</nav>' + "".join(cards) + '<details><summary>Data gaps &amp; limitations</summary><div class="body"><ul>' + gaps + "</ul></div></details></main>" + """<script>document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.querySelectorAll('[data-kind]').forEach(d=>d.hidden=b.dataset.filter!=='all'&&d.dataset.kind!==b.dataset.filter)}));document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(b.parentElement.querySelector('pre').textContent);b.nextElementSibling.textContent='Copied'}catch(e){b.nextElementSibling.textContent='Select the reply above to copy'}}));</script></html>"""
 
 
 def main() -> None:
@@ -156,6 +159,10 @@ def main() -> None:
             packet = decode(output.read_text())
         if packet.get("repo") != args.repo:
             raise ValueError("Agent changed repository identity")
+    evidence_path = args.out / "evidence.json"
+    if evidence_path.exists():
+        observed = decode(evidence_path.read_text())
+        packet["coverage"] = f"{len(observed['prs'])} open PRs · {len(observed['issues'])} open issues · Observed {observed['observed_at']}"
     report = render(packet)
     (args.out / "maintainer-actions.json").write_text(json.dumps(packet, indent=2) + "\n")
     (args.out / "maintainer-inbox.md").write_text(report)

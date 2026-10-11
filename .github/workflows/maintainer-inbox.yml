@@ -1,9 +1,6 @@
 name: Maintainer Inbox
 on:
   workflow_dispatch:
-  push:
-    branches: [feat/maintainer-inbox]
-    paths: [.github/workflows/maintainer-inbox.yml, tools/maintainer_inbox.py]
 permissions:
   contents: read
 concurrency:
@@ -11,7 +8,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   inbox:
-    if: github.repository == 'gvago/oss-maintainer-demo'
+    if: github.repository == 'gvago/oss-maintainer-demo' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 80
     steps:
