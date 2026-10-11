@@ -1,0 +1,32 @@
+name: Maintainer Inbox
+on:
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: Preconfigured host agent
+        type: choice
+        options: [claude, codex]
+        default: claude
+permissions:
+  contents: read
+jobs:
+  inbox:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, maintainer-inbox]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Generate proposed actions
+        env:
+          HOST_AGENT: ${{ inputs.agent }}
+        run: python3 tools/maintainer_inbox.py --repo "$GITHUB_REPOSITORY" --agent "$HOST_AGENT" --out maintainer-output
+      - name: Job summary
+        run: python3 -c 'from pathlib import Path; import os; Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(Path("maintainer-output/maintainer-inbox.md").read_text())'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maintainer-inbox
+          path: maintainer-output/
+          if-no-files-found: error
