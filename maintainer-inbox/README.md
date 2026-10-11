@@ -16,5 +16,7 @@ Requirements: authenticated Qodo CLI and Claude configured for your approved pro
 Claude generation has tools disabled. The Codex adapter is optional; its read-only filesystem
 sandbox does not restrict remote MCP writes, so use an isolated configuration without write tools.
 
-The GitHub workflow requires a configured dedicated runner; local generation does not.
+The GitHub workflow runs on hosted Ubuntu using encrypted repository secrets.
+Verified hosted run: https://github.com/gvago/oss-maintainer-demo/actions/runs/38158357749
+Download its artifact for the HTML interface, JSON actions and retrieval evidence.
 Do not close/merge/retarget based on a stale packet: refresh exact targets and PR heads first.
