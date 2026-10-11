@@ -236,30 +236,6 @@ Observed PR heads:
 
 </details>
 
-<details><summary>A11 · request_followup</summary>
-
-<pre>#28 is the inbox generator itself — repository infrastructure, not a contributor change, and not a duplicate of any other open PR despite touching exports-adjacent docs. It is reviewed separately from the contributor backlog. The follow-up is narrow: the packet checked into maintainer-inbox/ at this head was generated before behavior verification existed, so its committed artifacts state that no behavioral evidence was available for issue #8 and speculate that merged-history retrieval may have been incomplete. Both statements are contradicted by the evidence now collected at the same main SHA, so the checked-in sample should be regenerated before the PR is presented as current.</pre>
-
-Targets: https://github.com/gvago/oss-maintainer-demo/pull/28
-
-Evidence:
-<pre>PR #28 at head bd8f4b3 adds tools/maintainer_inbox.py, maintainer-inbox/ artifacts, agent-skills/maintainer-inbox/SKILL.md and .github/workflows/maintainer-inbox.yml — generator infrastructure, no change to the bookmarks runtime package.</pre>
-<pre>Checked-in maintainer-inbox/maintainer-actions.json gap: &#x27;No test-run output or live behavioral evidence is available for current main&#x27; — contradicted by behavior_verification at sha 13d048b, status &#x27;passed&#x27;, 6 tests OK plus the #8 reproduction.</pre>
-<pre>Checked-in gap: &#x27;Wisdom history search returned only a single candidate PR (PR #2) for every open issue, suggesting the similarity search may not have been exhaustive across all open PRs&#x27; — merged-history similarity searches merged PRs only, so a single merged hit is not evidence of missing open-PR coverage or a stale index.</pre>
-<pre>Checked-in maintainer-inbox/evidence.json records head_sha 5545fdf for PR #28, while the current observed head is bd8f4b3 — the committed sample is from an earlier head.</pre>
-<pre>PR #28 body: &#x27;Verification: python3 -m unittest discover -s tests -v — 11 tests passed, zero failures. No automatic forge mutations.&#x27;</pre>
-
-Uncertainty:
-<pre>The 11-passing-test claim in the PR body is the author&#x27;s report; no test output at head bd8f4b3 appears in this evidence set, and tests/test_maintainer_inbox.py was not fetched from current main (the current_main read covers only the three bookmarks source files). Whether the stale committed sample is intended as a frozen example or as the current output is a question for the author. Also unverified here: the workflow&#x27;s pinned-tool install path and secret handling, which warrant their own review pass.</pre>
-
-Draft reply:
-<pre>Treating #28 as infrastructure rather than contributor work, so it sits outside the backlog triage above. Two things to fix before this reads as current, both in the checked-in sample under maintainer-inbox/: it states no behavioral evidence was available for issue #8 (there now is — the suite and the #8 reproduction both pass at main sha 13d048b), and it infers the similarity search may have missed open PRs from a single merged hit. Merged-history similarity only searches merged PRs, so one result there says nothing about open-PR coverage or index freshness. Suggest regenerating the committed packet at the current head, or labelling it explicitly as a frozen example. Separately, please post the test output at bd8f4b3 — the body cites 11 passing tests but there&#x27;s no run recorded at this head.</pre>
-
-Observed PR heads:
-<pre>{&quot;https://github.com/gvago/oss-maintainer-demo/pull/28&quot;: &quot;bd8f4b3612ce42853cc0d7abdd6b5c5a52153441&quot;}</pre>
-
-</details>
-
 ## Data gaps
 
 <pre>Only three current-main files were retrieved (bookmarks/urls.py, bookmarks/exports.py, bookmarks/__main__.py). tests/test_bookmarks.py was not fetched from main, so the committed test set is known only through PR diffs and the recorded verification run, not read directly.</pre>
