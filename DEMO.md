@@ -80,24 +80,38 @@ full review of the latest commit remains a separate check.
 This proves retrieval of real decisions and review feedback, not automatic Rule Miner
 learning from an artificially short history. No mined rule has been claimed.
 
-## Latest experiment — thin workflow
+## Latest experiment — thin workflow plus REVIEW.md routing
 
-The thin `oss-contribution-workflow` is now the only discovered skill, active in steering
-mode with no extracted rules. It contains review steps but does not copy contribution policy.
+**Use [#26](https://github.com/gvago/oss-maintainer-demo/pull/26) and
+[#27](https://github.com/gvago/oss-maintainer-demo/pull/27) for the current setup.**
+CONTRIBUTING.md remains the only source of contribution policy. The thin steering
+skill supplies review steps; REVIEW.md explicitly routes contribution review through
+`oss-contribution-workflow`, reads the guidelines, and specifies evidence/severity handling.
+Neither file copies the four contribution requirements.
 
-- [#24](https://github.com/gvago/oss-maintainer-demo/pull/24): completed exact-head review,
-  three findings covering the same contribution defects and `CHANGES_REQUESTED`.
-  Findings are two generic bugs and one existing workspace rule violation, not Skill insights.
-- [#25](https://github.com/gvago/oss-maintainer-demo/pull/25): compliant runtime control,
-  completed exact-head review with zero findings and no request-changes vote.
-- The thin skill's metrics show two invocations but zero findingsProduced. Invocation is
-  verified; its contribution to detection is not. REVIEW.md remains enabled in this pair.
+- #26: completed exact-head review with **three Skill insights and one Bug**, followed by
+  `CHANGES_REQUESTED` at the same head. Each Skill insight cites skill ID 1081 and
+  CONTRIBUTING.md. They cover missing tests, third-party import and altered URL identity.
+- #27: compliant runtime control, seven local tests pass, completed exact-head review
+  with zero findings and no request-changes vote.
+- The extra Bug repeats the deduplication aspect of the URL-identity Skill insight.
+  Treat it as overlapping reporting, not a fourth distinct planted defect.
 
-The thin workflow did not reproduce the original skill's attributable result. Do not
-present #24 as proof that reading CONTRIBUTING.md through the thin skill caused detection.
-The proven source is preserved at branch `experiment/proven-steering`; #19/#20 remain
-historical demo evidence for that version. Restoring its source and verifying discovery
-is required before claiming the current configuration matches those earlier runs.
+This demonstrates single-source contribution guidelines with a thin steering workflow
+and REVIEW.md routing on this deployment. It does not prove a universal dependency on
+REVIEW.md: the prior pair used stale guidance naming the retired skill, and LLM runs
+vary. The observed difference supports the corrected route, not a causal guarantee.
+
+### Earlier thin-workflow arm
+
+The thin skill was active and invoked in #24/#25, but produced no attributed findings:
+#24 had two Bugs plus one existing workspace Rule violation and requested changes;
+#25 stayed clean. The then-existing REVIEW.md referenced the retired
+`oss-contribution-contract` skill. Correcting that reference and the workflow instructions
+in REVIEW.md was the only policy/setup change before the fresh #26/#27 fixture pair.
+The original explicit skill remains preserved at `experiment/proven-steering` and is
+not needed in the current single-source setup.
+
 
 ## Gate — original Skill steering and request-changes verified
 
