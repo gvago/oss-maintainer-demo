@@ -1,0 +1,7 @@
+[review_agent]
+enable_skills_agent = true
+enable_review_md = true
+publish_blast_radius_labels = true
+
+[qodo_describe_agent]
+publish_review_time_estimate_labels = true
