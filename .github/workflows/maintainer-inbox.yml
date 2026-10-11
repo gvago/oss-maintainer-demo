@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [feat/maintainer-inbox]
-    paths: [.github/workflows/maintainer-inbox.yml]
+    paths: [.github/workflows/maintainer-inbox.yml, tools/maintainer_inbox.py]
 permissions:
   contents: read
 concurrency:
