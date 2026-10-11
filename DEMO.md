@@ -80,7 +80,32 @@ full review of the latest commit remains a separate check.
 This proves retrieval of real decisions and review feedback, not automatic Rule Miner
 learning from an artificially short history. No mined rule has been claimed.
 
-## Gate — request-changes verified; skill attribution still pending
+## Gate — Skill steering and request-changes verified
+
+**Use [PR #19](https://github.com/gvago/oss-maintainer-demo/pull/19) for the demo.**
+After switching only the skill application mode to steering (skill, contribution guidelines,
+REVIEW.md and fixture code unchanged), Qodo completed the exact-head review and reported
+**Bugs (0), Rule violations (0), Skill insights (3)**. All three structured findings cite
+`oss-contribution-contract`, skill ID 1080:
+
+- CONTRIB-01: new runtime exporter has no regression test.
+- CONTRIB-02: third-party runtime import violates the dependency-free policy.
+- CONTRIB-03: separate URL identity bypasses the shared normalizer; the finding also
+  identifies query-value rewriting against CONTRIB-04.
+
+Qodo submitted `CHANGES_REQUESTED` on that same commit. The old six-test suite passes,
+so this demonstrates contribution review beyond a failing CI check.
+
+**[PR #20](https://github.com/gvago/oss-maintainer-demo/pull/20) is the compliant control:**
+seven tests pass, Qodo completed the exact-head review with zero findings, and no
+request-changes vote appears. Skill metrics record two invocations; their findingsProduced
+metric reports one and must not be confused with the three individual findings on #19.
+
+The mode-switch experiment supports using steering for this demo. It is not a universal
+claim that enforcement mode is broken, or an isolated test of REVIEW.md: REVIEW.md stayed
+active in both arms. Main changed only in the runbook between arms; runtime/policy sources
+and fixture diffs were held fixed. The earlier enforcement arm is recorded below.
+
 
 Fresh post-import review examples:
 
@@ -106,20 +131,21 @@ Do not present generic detection as skill-attributed enforcement.
 - [Draft #14](https://github.com/gvago/oss-maintainer-demo/pull/14) drops queries in the shared
   helper, with downstream impact and a failing existing test. Neither draft should merge.
 
-The imported skill is active as Rules enforcement, scoped only to this repository and
-pinned to main commit `5e859a7`. It extracted rules 13611, 13613, 13614 and 13615.
-Rules 13611, 13614 and 13615 are active; 13613 (stdlib-only runtime policy) is inactive.
-Skill usage metrics still report zero invocations/findings after these fresh reviews.
+In the earlier enforcement arm, the imported skill was scoped only to this repository and
+pinned to `5e859a7`, with extracted rules 13611, 13613, 13614 and 13615. Three were active;
+13613 was inactive. Those runs did not establish source attribution. In the current steering
+arm the full skill produced attributed findings, including CONTRIB-02, without changing
+that inactive extracted rule.
 
-### Remaining validation
+### Boundaries and optional next experiments
 
-1. Diagnose why active extracted contribution rules did not appear in finding attribution.
-   Do not duplicate the policy in a second rule file or change global settings.
-2. If activating rule 13613, make the repository-only scope and intended severity explicit.
-3. Open a fresh fixture after any effective configuration change and require a structured
-   finding citing the relevant imported rule/skill, followed by a quiet compliant control.
-4. If claiming merge blocking, configure and verify GitHub branch protection separately.
-   Request changes alone is not automatic rejection/closure or guaranteed merge blocking.
+- Keep the skill in steering for the proven demo; no simpler replacement is needed to
+  deliver this result. A workflow-only skill that reads CONTRIBUTING.md is a separate,
+  still-untested experiment.
+- If claiming merge blocking, configure and verify GitHub branch protection separately.
+  Request changes alone is not automatic rejection/closure or guaranteed merge blocking.
+- Keep all planted defects unmerged; compare #19 against #20 rather than fixing away the
+  demonstration findings.
 
 ## Source references
 
