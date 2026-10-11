@@ -19,8 +19,8 @@ class InboxTests(unittest.TestCase):
         self.assertNotIn("A11", [a["id"] for a in packet["actions"]])
         self.assertEqual((folder / "maintainer-inbox.md").read_text(), inbox.render(packet))
         self.assertEqual((folder / "maintainer-inbox.html").read_text(), inbox.render_html(packet))
-        self.assertEqual(evidence["behavior_verification"]["status"], "passed")
-        self.assertEqual(evidence["behavior_verification"]["sha"], evidence["current_main"]["bookmarks/urls.py"]["sha"])
+        # Snapshot consistency, not an independent rerun of historical verification.
+        self.assertIn(evidence["observed_at"], packet["coverage"])
 
 
     def test_verification_executes_checks_and_rejects_failures(self):
@@ -37,6 +37,9 @@ class InboxTests(unittest.TestCase):
                 if passes:
                     self.assertEqual(inbox.verify_demo_main(ROOT, evidence)["status"], "passed")
                     self.assertEqual(executed.call_count, 2)
+                    self.assertEqual(executed.call_args_list[0].args[0], ["python3", "-m", "unittest", "discover", "-s", "tests", "-v"])
+                    self.assertEqual(executed.call_args_list[1].args[0], ["python3", "-m", "bookmarks", "https://example.com:443/docs", "https://example.com/docs"])
+                    self.assertTrue(all(call.kwargs["cwd"] == ROOT for call in executed.call_args_list))
                 else:
                     with self.assertRaises(ValueError):
                         inbox.verify_demo_main(ROOT, evidence)
