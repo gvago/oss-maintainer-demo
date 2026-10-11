@@ -40,6 +40,14 @@ class ExportTests(unittest.TestCase):
 
 
 class CLITests(unittest.TestCase):
+    def test_cli_exports_csv(self):
+        import csv
+        import io
+        import subprocess
+        import sys
+        result = subprocess.run([sys.executable, "-m", "bookmarks", "--format", "csv", "HTTPS://Example.com"], capture_output=True, text=True, check=True)
+        self.assertEqual(list(csv.reader(io.StringIO(result.stdout))), [["url"], ["https://example.com/"]])
+
     def test_cli_exports_json(self):
         import json
         import subprocess
