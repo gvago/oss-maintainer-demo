@@ -54,7 +54,7 @@ class InboxTests(unittest.TestCase):
         packet["summary"] = attack
         packet["actions"][0]["rationale"] = attack
         rendered = inbox.render(packet)
-        self.assertIn('<pre>&lt;/pre&gt;&lt;/details&gt;', rendered)
+        self.assertIn('<p>&lt;/pre&gt;&lt;/details&gt;', rendered)
         self.assertNotIn('</pre></details>\n# Forged', rendered)
         self.assertIn(packet["coverage"], rendered)
 
