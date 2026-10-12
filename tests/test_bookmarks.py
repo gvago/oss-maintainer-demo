@@ -25,6 +25,13 @@ class URLTests(unittest.TestCase):
 
 
 class ExportTests(unittest.TestCase):
+    def test_csv_export(self):
+        import csv
+        import io
+        from bookmarks.exports import export_csv
+        rows = list(csv.reader(io.StringIO(export_csv(["HTTPS://Example.com/a?x=1,2", "https://example.com/a?x=1,2"]))))
+        self.assertEqual(rows, [["url"], ["https://example.com/a?x=1,2"]])
+
     def test_export_reuses_url_identity(self):
         import json
         from bookmarks.exports import export_json
