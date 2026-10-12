@@ -23,7 +23,7 @@ def scoped_tools(catalog: dict) -> dict:
     return {t["name"]: t for t in catalog["tools"]
             if t.get("access") == "read" and t.get("mutating") is False
             and t.get("group") in {"codebase", "pull-request", "pr-review-session"}
-            and ({"repo", "pr_url"} & t["parameters"].get("properties", {}).keys())
+            and ({"repo", "pr_url"} & set(t["parameters"].get("required", [])))
             and t["name"] != "litegit-search-repos"}
 
 
