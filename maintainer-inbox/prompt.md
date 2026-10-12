@@ -1,3 +1,4 @@
+Do not repeat backlog counts in summary; the runner computes them from discovery.
 Keep summary under 100 words, each rationale under 80 words, drafts under 80 words.
 Consult review-history or similar-suggestions once for a relevant area; retain only relevant
 feedback, and do not manufacture a history lesson if the corpus has no match.

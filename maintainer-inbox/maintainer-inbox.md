@@ -2,7 +2,7 @@
 
 <p>8 open PRs · 6 open issues · Observed 2026-10-12T07:42:41.629392+00:00</p>
 
-<p>Six open issues, seven open PRs. #9 and #10 are byte-equivalent `strip_fragment` implementations serving duplicate issues #3/#4 — keep one, close the other. #11→#12 is a real stack (#12 is based on `feat/csv-library`), not a duplicate. Issue #8 (:443 collapsing) is already fixed on main by merged PR #2 with regression coverage. PR #12&#x27;s review is stale against its head but both findings are implemented. PRs #26/#27 are seeded experiment/control — keep unmerged.</p>
+<p>#9 and #10 are byte-equivalent `strip_fragment` implementations serving duplicate issues #3/#4 — keep one, close the other. #11→#12 is a real stack (#12 is based on `feat/csv-library`), not a duplicate. Issue #8 (:443 collapsing) is already fixed on main by merged PR #2 with regression coverage. PR #12&#x27;s review is stale against its head but both findings are implemented. PRs #26/#27 are seeded experiment/control — keep unmerged.</p>
 
 All actions below are proposed, not approved or applied.
 
