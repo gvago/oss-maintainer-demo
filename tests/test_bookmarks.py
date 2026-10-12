@@ -16,6 +16,10 @@ class URLTests(unittest.TestCase):
             self.assertEqual(normalize_url(first), normalize_url(second))
         self.assertEqual(normalize_url("https://example.com:8443/a"), "https://example.com:8443/a")
 
+    def test_optional_fragment_identity(self):
+        self.assertEqual(normalize_url("https://example.com/a#one", strip_fragment=True), "https://example.com/a")
+        self.assertEqual(normalize_url("https://example.com/a#one"), "https://example.com/a#one")
+
     def test_invalid_urls(self):
         for value in ("file:///etc/passwd", "javascript:alert(1)", "https:///path",
                       "https://user:pass@example.com", "https://example.com:bad",
