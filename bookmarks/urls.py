@@ -1,7 +1,7 @@
 from urllib.parse import urlsplit, urlunsplit
 
 
-def normalize_url(value: str) -> str:
+def normalize_url(value: str, *, strip_fragment: bool = False) -> str:
     """Normalize HTTP(S) identity while preserving path, query and fragment."""
     if not isinstance(value, str) or not value or any(c.isspace() or ord(c) < 32 or ord(c) == 127 for c in value):
         raise ValueError("URL must be a nonempty string without whitespace or controls")
@@ -17,4 +17,4 @@ def normalize_url(value: str) -> str:
     authority = f"[{host}]" if ":" in host else host
     if port is not None and (parts.scheme, port) not in {("http", 80), ("https", 443)}:
         authority += f":{port}"
-    return urlunsplit((parts.scheme.lower(), authority, parts.path or "/", parts.query, parts.fragment))
+    return urlunsplit((parts.scheme.lower(), authority, parts.path or "/", parts.query, "" if strip_fragment else parts.fragment))
