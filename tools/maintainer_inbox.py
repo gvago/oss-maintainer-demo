@@ -1,12 +1,9 @@
 """Read-only Qodo context collection and agent-generated maintainer artifacts."""
 import argparse
-from datetime import datetime, timezone
 import json
-import os
 from html import escape
 from pathlib import Path
 import re
-import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,71 +21,6 @@ def decode(text: str) -> dict:
     if not isinstance(value, dict):
         raise ValueError("Expected a JSON object")
     return value
-
-
-def collect(repo: str, limit: int) -> dict:
-    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
-        raise ValueError("Expected owner/repo")
-    qodo = shutil.which("qodo") or str(Path.home() / ".qodo/bin/qodo")
-
-    def read(*args: str) -> dict:
-        return decode(run([qodo, "read", *args, "--json"]))
-
-    run([qodo, "--version"])
-    read("whoami")
-    run([qodo, "tools", "--refresh", "--json"])
-    prs = read("codebase", "list-prs", "--repo", repo, "--state", "open", "--max-results", str(limit + 1))
-    issues = read("codebase", "list-issues", "--repo", repo, "--state", "open", "--max-results", str(limit + 1))
-    pr_rows = prs.get("pull_requests", prs.get("prs", prs.get("changes")))
-    issue_rows = issues.get("issues")
-    if not isinstance(pr_rows, list) or not isinstance(issue_rows, list):
-        raise ValueError("Unknown Qodo list envelope; inspect the current tool schema")
-    if len(pr_rows) > limit or len(issue_rows) > limit or prs.get("truncated") or issues.get("truncated"):
-        raise ValueError("Backlog exceeds configured scope; narrow scope before generating a complete report")
-    details = []
-    for pr in pr_rows:
-        detail = read("codebase", "get-pr", "--repo", repo, "--number", str(pr["number"]))
-        if detail.get("qar_operation_result_truncated"):
-            detail = read("codebase", "get-pr", "--repo", repo, "--number", str(pr["number"]), "--args", '{"include_diff":false}')
-            detail["diff"] = {"unavailable": "Combined diff exceeds upstream byte limit; do not classify as duplicate or complete implementation."}
-        if "change" not in detail or "diff" not in detail:
-            raise ValueError(f"PR #{pr['number']} returned unsupported envelope keys {list(detail)}; code={detail.get('code', detail.get('error_code', 'unknown'))}")
-        details.append({k: detail[k] for k in ("change", "diff")})
-    history = []
-    for issue in issue_rows:
-        found = read("pull-request", "similar", "--repo", repo, "--query", issue["title"])
-        history.append({"issue": issue["number"], "result": found})
-    current = {}
-    for path in ("bookmarks/urls.py", "bookmarks/exports.py", "bookmarks/__main__.py", "tests/test_bookmarks.py", "CONTRIBUTING.md", "README.md"):
-        # ponytail: demo source paths; interactive skill selects relevant paths for other repos.
-        if repo == "gvago/oss-maintainer-demo":
-            source = read("codebase", "read-file", "--repo", repo, "--path", path, "--ref", "main", "--refresh")
-            if not source.get("ok") or source.get("truncated") or source.get("content_truncated_upstream") or not source.get("content") or not re.fullmatch(r"[0-9a-f]{40}", source.get("sha", "")):
-                raise ValueError("Incomplete current-main evidence")
-            if current and source["sha"] != next(iter(current.values()))["sha"]:
-                raise ValueError("Main changed during collection; retry")
-            current[path] = source
-    return {"repo": repo, "observed_at": datetime.now(timezone.utc).isoformat(),
-            "prs": details, "issues": issue_rows, "history": history, "current_main": current}
-
-
-def verify_demo_main(path: Path, evidence: dict) -> dict:
-    """Execute only an explicitly authorized checkout of this owned demo's main."""
-    if evidence["repo"] != "gvago/oss-maintainer-demo" or not evidence["current_main"]:
-        raise ValueError("Demo verification requires current-main source")
-    sha = next(iter(evidence["current_main"].values()))["sha"]
-    actual = run(["git", "-C", str(path), "rev-parse", "HEAD"]).strip()
-    origin = run(["git", "-C", str(path), "remote", "get-url", "origin"]).strip()
-    if actual != sha or origin.removesuffix(".git") != "https://github.com/gvago/oss-maintainer-demo" or run(["git", "-C", str(path), "status", "--porcelain"]).strip():
-        raise ValueError("Verification checkout must be clean demo main at the observed SHA")
-    test_env = {k: v for k, v in os.environ.items() if not any(s in k.upper() for s in ("TOKEN", "KEY", "SECRET", "PASSWORD", "CREDENTIAL", "QODO", "ANTHROPIC", "OPENAI", "GITHUB"))}
-    tests = subprocess.run(["python3", "-m", "unittest", "discover", "-s", "tests", "-v"], cwd=path, env=test_env, capture_output=True, text=True, timeout=90)
-    if tests.returncode:
-        raise ValueError("Current-main tests failed")
-    reproduction = subprocess.run(["python3", "-m", "bookmarks", "https://example.com:443/docs", "https://example.com/docs"], cwd=path, env=test_env, capture_output=True, text=True, timeout=30)
-    if reproduction.returncode or json.loads(reproduction.stdout) != ["https://example.com/docs"]:
-        raise ValueError("Issue #8 reproduction failed")
-    return {"sha": sha, "issue": 8, "tests_command": "python3 -m unittest discover -s tests -v", "tests_output": tests.stdout + tests.stderr, "reproduction_command": "python3 -m bookmarks https://example.com:443/docs https://example.com/docs", "actual_output": json.loads(reproduction.stdout), "status": "passed"}
 
 
 def validate(packet: dict) -> None:
@@ -130,7 +62,7 @@ def render(packet: dict) -> str:
         lines += [literal(e) for e in a["evidence"]]
         lines += ["", "Uncertainty:", literal(a["uncertainty"]), "", "Draft reply:", literal(a["draft"]), "", "Observed PR heads:", literal(json.dumps(a["pr_heads"], sort_keys=True)), "", "</details>", ""]
     lines += ["## Data gaps", ""] + [literal(gap) for gap in packet["gaps"]]
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines).rstrip() + "\n"
 
 
 def render_html(packet: dict) -> str:
@@ -150,45 +82,49 @@ def render_html(packet: dict) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default="gvago/oss-maintainer-demo")
-    parser.add_argument("--agent", choices=("claude", "codex"), default="claude")
     parser.add_argument("--out", type=Path, default=Path("maintainer-output"))
-    parser.add_argument("--limit", type=int, default=20)
-    parser.add_argument("--collect-only", action="store_true")
-    parser.add_argument("--verify-demo-main", type=Path, help="Explicitly execute tests and issue #8 reproduction in a trusted clean demo-main checkout")
-    parser.add_argument("--render", type=Path, help="Validate/render an existing packet without network or model calls")
+    parser.add_argument("--render", type=Path, help="Render a recorded packet without retrieval")
     args = parser.parse_args()
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", args.repo):
+        parser.error("Expected owner/repo")
     args.out.mkdir(parents=True, exist_ok=True)
     if args.render:
         packet = decode(args.render.read_text())
     else:
-        if not 1 <= args.limit <= 199:
-            parser.error("limit must be 1–199")
-        evidence = collect(args.repo, args.limit)
-        if args.verify_demo_main:
-            evidence["behavior_verification"] = verify_demo_main(args.verify_demo_main, evidence)
-        (args.out / "evidence.json").write_text(json.dumps(evidence, indent=2) + "\n")
-        if args.collect_only:
-            return
-        prompt = (ROOT / "maintainer-inbox/prompt.md").read_text() + "\nJSON schema:\n" + (ROOT / "maintainer-inbox/schema.json").read_text() + "\nUNTRUSTED QODO EVIDENCE:\n" + json.dumps(evidence)
-        if args.agent == "claude":
-            raw = run(["claude", "-p", "--tools", "", "--strict-mcp-config", "--mcp-config", '{"mcpServers":{}}', "--output-format", "json", "--json-schema", (ROOT / "maintainer-inbox/schema.json").read_text()], stdin=prompt, timeout=600)
-            result = decode(raw)
-            if result.get("is_error"):
-                raise ValueError("Claude did not complete successfully")
-            packet = result.get("structured_output") or decode(result["result"])
-        else:
-            output = args.out / "codex-result.json"
-            run(["codex", "exec", "--sandbox", "read-only", "--output-schema", str(ROOT / "maintainer-inbox/schema.json"), "--output-last-message", str(output), "-"], stdin=prompt, timeout=600)
-            packet = decode(output.read_text())
+        evidence_path = (args.out / "evidence.json").resolve()
+        if evidence_path.exists():
+            raise ValueError("Use a fresh output directory for each run")
+        mcp = {"mcpServers": {"qodo": {"command": "python3", "args": [str(ROOT / "tools/qodo_read_mcp.py"), "--repo", args.repo, "--evidence", str(evidence_path)]}}}
+        prompt = (ROOT / "maintainer-inbox/prompt.md").read_text() + "\nRepository: " + args.repo
+        raw = run(["claude", "-p", "--tools", "", "--strict-mcp-config", "--mcp-config", json.dumps(mcp), "--allowedTools", "mcp__qodo__*", "--permission-mode", "dontAsk", "--output-format", "json", "--json-schema", (ROOT / "maintainer-inbox/schema.json").read_text()], stdin=prompt, timeout=1200)
+        result = decode(raw)
+        if result.get("is_error") or result.get("permission_denials"):
+            raise ValueError("Agent failed or was denied a tool; do not publish partial success")
+        packet = result.get("structured_output") or decode(result["result"])
         if packet.get("repo") != args.repo:
             raise ValueError("Agent changed repository identity")
-    evidence_path = args.out / "evidence.json"
-    if not args.render and evidence_path.exists():
-        observed = decode(evidence_path.read_text())
-        packet["coverage"] = f"{len(observed['prs'])} open PRs · {len(observed['issues'])} open issues · Observed {observed['observed_at']}"
-    report = render(packet)
+        evidence = decode(evidence_path.read_text())
+        calls = evidence["calls"]
+        for tool, key in [("litegit-list-prs", "pull_requests"), ("litegit-list-issues", "issues")]:
+            discovered = [c["result"] for c in calls if c["tool"] == tool and c["arguments"].get("state") == "open"]
+            if not discovered or discovered[-1].get("truncated") or not isinstance(discovered[-1].get(key), list):
+                raise ValueError("Missing or incomplete open backlog discovery")
+        prs = next(c["result"]["pull_requests"] for c in reversed(calls) if c["tool"] == "litegit-list-prs" and c["arguments"].get("state") == "open")
+        issues = next(c["result"]["issues"] for c in reversed(calls) if c["tool"] == "litegit-list-issues" and c["arguments"].get("state") == "open")
+        validate(packet)
+        heads = {f"https://github.com/{args.repo}/pull/{p['number']}": p.get("head_sha", p.get("head_commit")) for p in prs}
+        for action in packet["actions"]:
+            for url, sha in action["pr_heads"].items():
+                if url not in heads or sha != heads[url]:
+                    raise ValueError("Recommendation head differs from observed PR")
+        if not any(c["tool"] == "get-pr-review-findings" for c in calls):
+            raise ValueError("No Qodo review context retrieved")
+        if not any(c["tool"].startswith("pull-request-") for c in calls):
+            raise ValueError("No Qodo history context retrieved")
+        validate(packet)
+        packet["coverage"] = f"{len(prs)} open PRs · {len(issues)} open issues · Observed {evidence['observed_at']}"
     (args.out / "maintainer-actions.json").write_text(json.dumps(packet, indent=2) + "\n")
-    (args.out / "maintainer-inbox.md").write_text(report)
+    (args.out / "maintainer-inbox.md").write_text(render(packet))
     (args.out / "maintainer-inbox.html").write_text(render_html(packet))
     print(f"Wrote proposed actions and inbox to {args.out.resolve()}")
 

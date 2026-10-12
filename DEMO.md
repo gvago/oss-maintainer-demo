@@ -44,20 +44,23 @@ labels do not automatically enforce different reviewer counts.
 ## 2. Generate a maintainer inbox
 
 Use an authenticated Qodo CLI and Claude Code configured for your approved model provider.
-This repository's runner uses Qodo managed read tools for issues, PR diffs and merged history;
-Claude receives that evidence with tools disabled and returns structured recommendations.
+The agent discovers Qodo's live read-tool catalog and chooses its own investigation:
+current reviews, relevant prior fixes, accepted review feedback, and focused source/diff reads.
+The runner only provides restricted read transport, validates the packet and renders it.
+There is no hardcoded file list, issue-title search loop, test runner or separate CI collector.
 
 ```sh
-python3 tools/maintainer_inbox.py --repo gvago/oss-maintainer-demo --agent claude
+python3 tools/maintainer_inbox.py --repo gvago/oss-maintainer-demo
 ```
 
 Open `maintainer-output/maintainer-inbox.md`. The sibling JSON contains action IDs,
 evidence, uncertainties, draft replies and observed PR head SHAs. Nothing is posted or closed.
 
-For your repository, replace the slug. The minimal runner caps discovery at 20 open PRs/issues
-and refuses larger backlogs instead of reporting incomplete coverage as complete.
-The demo additionally retrieves its relevant source files on main; for other repositories,
-use the interactive skill below to select current code relevant to candidate fixes.
+For your repository, replace the slug and use a fresh output directory for each run.
+The session-local MCP adapter exposes only Qodo managed reads scoped to that repository;
+the agent has no shell, file-write or forge-write tools. `evidence.json` records its actual
+calls and responses. Truncated backlog discovery stops publication rather than faking coverage.
+Interactive clients can use an existing official Qodo MCP connection instead of this CLI bridge.
 
 ### Interactive Claude, Codex or Hermes
 
@@ -68,11 +71,6 @@ Load the official Qodo Codebase Wisdom skill plus
 > and tests, issues and merged history. Find duplicate work, partial fixes and dependencies.
 > Check current main before suggesting an issue is already fixed. Produce maintainer-inbox.md
 > and maintainer-actions.json. Analysis only; do not post, close, merge or rebase.
-
-For this demo, add `--verify-demo-main /path/to/clean/main-worktree` to execute the test
-suite and issue #8 reproduction at the same SHA retrieved through Wisdom. The hosted
-workflow checks out trusted main separately and includes this evidence automatically.
-Never run arbitrary contributor-branch code with analysis credentials.
 
 History indexing occurs on merges. Manual refresh is rate-limited (currently once per
 30 minutes on this deployment); inbox generation does not trigger an index refresh.
@@ -114,8 +112,7 @@ Actions remain proposals: source links and copy buttons do not close issues or m
 
 ```sh
 python3 -m unittest discover -s tests -v
-python3 tools/maintainer_inbox.py --collect-only --repo OWNER/REPO
-python3 tools/maintainer_inbox.py --repo OWNER/REPO --agent claude
+python3 tools/maintainer_inbox.py --repo OWNER/REPO
 ```
 
 The last command must produce a fresh report, not just render a checked-in sample.
