@@ -82,6 +82,35 @@ class InboxTests(unittest.TestCase):
             with self.assertRaises(ValueError, msg=change):
                 inbox.bind_evidence(p, e)
 
+    def test_missing_heads_are_bound_from_evidence_not_invented(self):
+        folder = ROOT / "maintainer-inbox"
+        packet = json.loads((folder / "maintainer-actions.json").read_text())
+        evidence = json.loads((folder / "evidence.json").read_text())
+        expected = [dict(a["pr_heads"]) for a in packet["actions"]]
+        for action in packet["actions"]:
+            action["pr_heads"] = {}
+        with self.assertRaises(ValueError):
+            inbox.validate(packet)
+        inbox.bind_evidence(packet, evidence)
+        self.assertEqual([a["pr_heads"] for a in packet["actions"]], expected)
+        for change in ["unknown", "conflict", "missing_observation", "invalid_observation"]:
+            p, e = copy.deepcopy(packet), copy.deepcopy(evidence)
+            action = next(a for a in p["actions"] if a["pr_heads"])
+            url = next(iter(action["pr_heads"]))
+            if change == "unknown":
+                action["targets"].append(f"https://github.com/{p['repo']}/pull/999")
+            elif change == "conflict":
+                action["pr_heads"][url] = "f" * 40
+            else:
+                action["pr_heads"] = {}
+                for call in e["calls"]:
+                    if call["tool"] == "litegit-list-prs":
+                        pr = next(pr for pr in call["result"]["pull_requests"] if str(pr["number"]) == url.rsplit("/", 1)[1])
+                        pr["head_sha"] = None if change == "missing_observation" else "abc123"
+                        pr.pop("head_commit", None)
+            with self.assertRaises(ValueError, msg=change):
+                inbox.bind_evidence(p, e)
+
     def test_duplicate_ids_are_rejected(self):
         packet = json.loads((ROOT / "maintainer-inbox/maintainer-actions.json").read_text())
         packet["actions"].append(packet["actions"][0])
