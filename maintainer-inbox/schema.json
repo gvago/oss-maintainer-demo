@@ -78,7 +78,8 @@
           "pr_heads": {
             "type": "object",
             "additionalProperties": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
             }
           }
         }
