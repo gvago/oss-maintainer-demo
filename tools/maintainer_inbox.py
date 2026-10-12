@@ -79,6 +79,31 @@ def render_html(packet: dict) -> str:
 <style>body{background:#f5f6f9;color:#202936;font:16px/1.55 system-ui;margin:0}*{box-sizing:border-box}body{overflow-wrap:anywhere}main{min-width:0;max-width:1060px;margin:40px auto;padding:0 24px}h1{font-size:42px;letter-spacing:-1.5px;margin:4px 0}header{border-left:5px solid #6b46c1;padding-left:22px}.eyebrow{color:#6344a1;text-transform:uppercase;letter-spacing:2px;font-size:12px;font-weight:700}nav{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0}button{font:inherit;border:1px solid #cbd0da;background:white;color:#283446;border-radius:7px;padding:8px 12px;cursor:pointer}button[aria-pressed=true]{background:#3f2a70;color:white}details{background:white;border:1px solid #d9dee7;border-radius:10px;margin:12px 0;overflow:hidden}summary{cursor:pointer;padding:18px}.badge{color:#4b3979;background:#f0eafa;border-radius:5px;padding:4px 8px;font-size:12px;text-transform:uppercase;margin-right:10px}.links{float:right;font-size:14px}a{color:#31559b}.body{padding:0 22px 22px;border-top:1px solid #e5e8ee}h3{font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-top:24px}.uncertain{border-left:3px solid #c48931;padding-left:14px;color:#65502f}pre{overflow-wrap:anywhere;white-space:pre-wrap;font:inherit;background:#f7f8fb;border:1px solid #e5e8ee;padding:16px;border-radius:8px}small{display:block;margin-top:18px;overflow-wrap:anywhere;color:#647084}.notice{color:#647084}li{margin-bottom:8px}@media(max-width:650px){.links{float:none;display:block;margin-top:10px}h1{font-size:32px}main{padding:0 16px}}</style><main><header><div class="eyebrow">Maintainer decision packet</div><h1>Less backlog. Clear next steps.</h1><p>""" + escape(packet["repo"]) + "</p><p>" + escape(packet.get("coverage", "Coverage unavailable")) + "</p><p>" + escape(packet["summary"]) + '</p><p class="notice">Proposed only · No changes applied · Refresh evidence before acting</p></header><nav aria-label="Filter recommendations">' + filters + '</nav>' + "".join(cards) + '<details><summary>Data gaps &amp; limitations</summary><div class="body"><ul>' + gaps + "</ul></div></details></main>" + """<script>document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.querySelectorAll('[data-kind]').forEach(d=>d.hidden=b.dataset.filter!=='all'&&d.dataset.kind!==b.dataset.filter)}));document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(b.parentElement.querySelector('pre').textContent);b.nextElementSibling.textContent='Copied'}catch(e){b.nextElementSibling.textContent='Select the reply above to copy'}}));</script></html>"""
 
 
+def bind_evidence(packet: dict, evidence: dict) -> None:
+    calls = evidence["calls"]
+    for tool, key in [("litegit-list-prs", "pull_requests"), ("litegit-list-issues", "issues")]:
+        discovered = [c["result"] for c in calls if c["tool"] == tool and c["arguments"] == {"repo": packet["repo"], "state": "open", "max_results": 200}]
+        if not discovered or discovered[-1].get("truncated") or not isinstance(discovered[-1].get(key), list) or len(discovered[-1][key]) >= 200:
+            raise ValueError("Missing or incomplete open backlog discovery")
+    prs = next(c["result"]["pull_requests"] for c in reversed(calls) if c["tool"] == "litegit-list-prs" and c["arguments"] == {"repo": packet["repo"], "state": "open", "max_results": 200})
+    issues = next(c["result"]["issues"] for c in reversed(calls) if c["tool"] == "litegit-list-issues" and c["arguments"] == {"repo": packet["repo"], "state": "open", "max_results": 200})
+    validate(packet)
+    heads = {f"https://github.com/{packet['repo']}/pull/{p['number']}": p.get("head_sha", p.get("head_commit")) for p in prs}
+    open_issues = {f"https://github.com/{packet['repo']}/issues/{i['number']}" for i in issues}
+    for action in packet["actions"]:
+        if any("/issues/" in url and url not in open_issues for url in action["targets"]):
+            raise ValueError("Recommendation targets an unobserved open issue")
+        for url, sha in action["pr_heads"].items():
+            if url not in heads or sha != heads[url]:
+                raise ValueError("Recommendation head differs from observed PR")
+    if not any(c["tool"] == "get-pr-review-findings" for c in calls):
+        raise ValueError("No Qodo review context retrieved")
+    if not any(c["tool"].startswith("pull-request-") for c in calls):
+        raise ValueError("No Qodo history context retrieved")
+    validate(packet)
+    packet["coverage"] = f"{len(prs)} open PRs · {len(issues)} open issues · Observed {evidence['observed_at']}"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", default="gvago/oss-maintainer-demo")
@@ -104,25 +129,7 @@ def main() -> None:
         if packet.get("repo") != args.repo:
             raise ValueError("Agent changed repository identity")
         evidence = decode(evidence_path.read_text())
-        calls = evidence["calls"]
-        for tool, key in [("litegit-list-prs", "pull_requests"), ("litegit-list-issues", "issues")]:
-            discovered = [c["result"] for c in calls if c["tool"] == tool and c["arguments"].get("state") == "open"]
-            if not discovered or discovered[-1].get("truncated") or not isinstance(discovered[-1].get(key), list):
-                raise ValueError("Missing or incomplete open backlog discovery")
-        prs = next(c["result"]["pull_requests"] for c in reversed(calls) if c["tool"] == "litegit-list-prs" and c["arguments"].get("state") == "open")
-        issues = next(c["result"]["issues"] for c in reversed(calls) if c["tool"] == "litegit-list-issues" and c["arguments"].get("state") == "open")
-        validate(packet)
-        heads = {f"https://github.com/{args.repo}/pull/{p['number']}": p.get("head_sha", p.get("head_commit")) for p in prs}
-        for action in packet["actions"]:
-            for url, sha in action["pr_heads"].items():
-                if url not in heads or sha != heads[url]:
-                    raise ValueError("Recommendation head differs from observed PR")
-        if not any(c["tool"] == "get-pr-review-findings" for c in calls):
-            raise ValueError("No Qodo review context retrieved")
-        if not any(c["tool"].startswith("pull-request-") for c in calls):
-            raise ValueError("No Qodo history context retrieved")
-        validate(packet)
-        packet["coverage"] = f"{len(prs)} open PRs · {len(issues)} open issues · Observed {evidence['observed_at']}"
+        bind_evidence(packet, evidence)
     (args.out / "maintainer-actions.json").write_text(json.dumps(packet, indent=2) + "\n")
     (args.out / "maintainer-inbox.md").write_text(render(packet))
     (args.out / "maintainer-inbox.html").write_text(render_html(packet))

@@ -6,7 +6,8 @@
       "tool": "litegit-list-issues",
       "arguments": {
         "repo": "gvago/oss-maintainer-demo",
-        "state": "open"
+        "state": "open",
+        "max_results": 200
       },
       "result": {
         "issues": [
@@ -15,13 +16,6 @@
             "title": "HTTPS links with and without :443 should not be duplicated",
             "body": "An old report: exporting https://example.com:443/docs and https://example.com/docs creates two entries. Investigate whether this is already addressed on main before implementing another fix.",
             "state": "open",
-            "author": {
-              "login": "gvago",
-              "external_id": "157597376",
-              "is_bot": false,
-              "is_self": false
-            },
-            "assignees": [],
             "labels": [],
             "comments_count": 0,
             "created_at": "2026-10-11T10:48:09Z",
@@ -34,13 +28,6 @@
             "title": "Signed URLs lose meaning if query parameters are discarded",
             "body": "The query string can contain signatures, repeated keys, tracking-looking keys or routing state. Add explicit regression coverage proving names, values, order and repetitions are preserved by normalization and all exports.",
             "state": "open",
-            "author": {
-              "login": "gvago",
-              "external_id": "157597376",
-              "is_bot": false,
-              "is_self": false
-            },
-            "assignees": [],
             "labels": [],
             "comments_count": 0,
             "created_at": "2026-10-11T10:48:07Z",
@@ -53,13 +40,6 @@
             "title": "Expose CSV output from the command line",
             "body": "Add --format csv to the CLI using the library exporter. Related library work is required; default JSON behavior must remain compatible.",
             "state": "open",
-            "author": {
-              "login": "gvago",
-              "external_id": "157597376",
-              "is_bot": false,
-              "is_self": false
-            },
-            "assignees": [],
             "labels": [],
             "comments_count": 0,
             "created_at": "2026-10-11T10:48:05Z",
@@ -72,13 +52,6 @@
             "title": "Add CSV export for spreadsheet users",
             "body": "Add a CSV exporter with a url header, stable first-seen deduplication, shared URL normalization and correct quoting. Keep this library change separate from CLI wiring.",
             "state": "open",
-            "author": {
-              "login": "gvago",
-              "external_id": "157597376",
-              "is_bot": false,
-              "is_self": false
-            },
-            "assignees": [],
             "labels": [],
             "comments_count": 0,
             "created_at": "2026-10-11T10:48:03Z",
@@ -91,13 +64,6 @@
             "title": "Collapse saved links that only differ after the hash",
             "body": "Saving https://example.com/guide#a and https://example.com/guide#b produces two entries. Need an optional way to save one document entry rather than each section. Existing defaults must stay compatible.",
             "state": "open",
-            "author": {
-              "login": "gvago",
-              "external_id": "157597376",
-              "is_bot": false,
-              "is_self": false
-            },
-            "assignees": [],
             "labels": [],
             "comments_count": 0,
             "created_at": "2026-10-11T10:48:01Z",
@@ -110,13 +76,6 @@
             "title": "Bookmarks with different section anchors appear twice",
             "body": "JSON export currently treats https://example.com/guide#intro and https://example.com/guide#install as different bookmarks. Add opt-in fragment-free identity while keeping current behavior the default. Shared normalizer, export and CLI should agree.",
             "state": "open",
-            "author": {
-              "login": "gvago",
-              "external_id": "157597376",
-              "is_bot": false,
-              "is_self": false
-            },
-            "assignees": [],
             "labels": [],
             "comments_count": 0,
             "created_at": "2026-10-11T10:47:59Z",
@@ -131,10 +90,37 @@
       "tool": "litegit-list-prs",
       "arguments": {
         "repo": "gvago/oss-maintainer-demo",
-        "state": "open"
+        "state": "open",
+        "max_results": 200
       },
       "result": {
         "pull_requests": [
+          {
+            "id": "4826419589",
+            "number": 31,
+            "title": "feat: Wisdom-led maintainer inbox",
+            "state": "open",
+            "base_branch": "main",
+            "head_branch": "feat/wisdom-led-inbox",
+            "created_at": "2026-10-12T07:45:32Z",
+            "updated_at": "2026-10-12T07:49:38Z",
+            "merged_at": null,
+            "html_url": "https://github.com/gvago/oss-maintainer-demo/pull/31",
+            "is_draft": false,
+            "base_commit": "b5f1ade39a4b8dc101e9da1d69ea05447c43348a",
+            "head_commit": "69bf0a9b8386aacec0563037ed2483cafcdc967c",
+            "description": "Replaces fixed file/issue collectors and demo execution with agent-selected Qodo managed reads. Session-local MCP bridge projects live read catalog, scopes to selected repo and permits no shell or forge writes. Two real Claude/Qodo gateway runs exercised review findings, historical feedback, duplicates, partial fixes and stack analysis. JSON/Markdown/HTML paired with tool trace; no generic CI warning. python3 -m unittest discover -s tests -v: 15 passed. Acceptance: maintainer-inbox/GOOD.md. Manual main-only hosted activation requires merge and a fresh run; no automatic pushes or new credential changes.",
+            "labels": [
+              "\ud83d\udd50 40+ Minutes",
+              "\ud83d\udd34 Large blast radius"
+            ],
+            "merge_commit": "4ee79edadeed4e5c56e4542ae7167c7b149d9a2d",
+            "diff_url": "https://github.com/gvago/oss-maintainer-demo/pull/31.diff",
+            "patch_url": "https://github.com/gvago/oss-maintainer-demo/pull/31.patch",
+            "comments_url": "https://api.github.com/repos/gvago/oss-maintainer-demo/issues/31/comments",
+            "review_comments_url": "https://api.github.com/repos/gvago/oss-maintainer-demo/pulls/31/comments",
+            "closed_at": null
+          },
           {
             "id": "4820400135",
             "number": 26,
@@ -142,7 +128,6 @@
             "state": "open",
             "base_branch": "main",
             "head_branch": "experiment/thin-review-md-bad",
-            "author": "gvago",
             "created_at": "2026-10-11T16:05:09Z",
             "updated_at": "2026-10-11T16:06:07Z",
             "merged_at": null,
@@ -155,8 +140,6 @@
               "\ud83d\udd50 Less than 10 minutes",
               "\ud83d\udfe0 Medium blast radius"
             ],
-            "assignees": [],
-            "requested_reviewers": [],
             "merge_commit": "cca00c924ba9acd726ea5530660b4e5ad20afa58",
             "diff_url": "https://github.com/gvago/oss-maintainer-demo/pull/26.diff",
             "patch_url": "https://github.com/gvago/oss-maintainer-demo/pull/26.patch",
@@ -171,7 +154,6 @@
             "state": "open",
             "base_branch": "main",
             "head_branch": "experiment/thin-review-md-control",
-            "author": "gvago",
             "created_at": "2026-10-11T16:05:14Z",
             "updated_at": "2026-10-11T16:06:01Z",
             "merged_at": null,
@@ -184,8 +166,6 @@
               "\ud83d\udd50 Less than 10 minutes",
               "\ud83d\udfe1 Small blast radius"
             ],
-            "assignees": [],
-            "requested_reviewers": [],
             "merge_commit": "886625180daa91ab12ef2aeaedcde788cde90904",
             "diff_url": "https://github.com/gvago/oss-maintainer-demo/pull/27.diff",
             "patch_url": "https://github.com/gvago/oss-maintainer-demo/pull/27.patch",
@@ -200,7 +180,6 @@
             "state": "open",
             "base_branch": "feat/csv-library",
             "head_branch": "feat/csv-cli",
-            "author": "gvago",
             "created_at": "2026-10-11T10:50:26Z",
             "updated_at": "2026-10-11T11:02:12Z",
             "merged_at": null,
@@ -213,8 +192,6 @@
               "\ud83d\udd50 Less than 10 minutes",
               "\ud83d\udfe0 Medium blast radius"
             ],
-            "assignees": [],
-            "requested_reviewers": [],
             "merge_commit": "8abb112df89aab87a5dfb887c8a94386813dff77",
             "diff_url": "https://github.com/gvago/oss-maintainer-demo/pull/12.diff",
             "patch_url": "https://github.com/gvago/oss-maintainer-demo/pull/12.patch",
@@ -229,7 +206,6 @@
             "state": "open",
             "base_branch": "main",
             "head_branch": "feat/document-identity",
-            "author": "gvago",
             "created_at": "2026-10-11T10:50:17Z",
             "updated_at": "2026-10-11T11:01:49Z",
             "merged_at": null,
@@ -242,8 +218,6 @@
               "\ud83d\udd50 Less than 10 minutes",
               "\ud83d\udfe1 Small blast radius"
             ],
-            "assignees": [],
-            "requested_reviewers": [],
             "merge_commit": "63892fdbcf98132bf6be3775378fc1b2f949ce45",
             "diff_url": "https://github.com/gvago/oss-maintainer-demo/pull/9.diff",
             "patch_url": "https://github.com/gvago/oss-maintainer-demo/pull/9.patch",
@@ -258,7 +232,6 @@
             "state": "open",
             "base_branch": "main",
             "head_branch": "feat/ignore-section-anchor",
-            "author": "gvago",
             "created_at": "2026-10-11T10:50:20Z",
             "updated_at": "2026-10-11T10:51:20Z",
             "merged_at": null,
@@ -271,8 +244,6 @@
               "\ud83d\udd50 Less than 10 minutes",
               "\ud83d\udfe1 Small blast radius"
             ],
-            "assignees": [],
-            "requested_reviewers": [],
             "merge_commit": "1d3687f5fd71545549d5195d06fe3a6164f3aa92",
             "diff_url": "https://github.com/gvago/oss-maintainer-demo/pull/10.diff",
             "patch_url": "https://github.com/gvago/oss-maintainer-demo/pull/10.patch",
@@ -287,7 +258,6 @@
             "state": "open",
             "base_branch": "main",
             "head_branch": "docs/quickstart",
-            "author": "gvago",
             "created_at": "2026-10-11T10:50:29Z",
             "updated_at": "2026-10-11T10:51:14Z",
             "merged_at": null,
@@ -299,8 +269,6 @@
             "labels": [
               "\ud83d\udd50 Less than 5 minutes"
             ],
-            "assignees": [],
-            "requested_reviewers": [],
             "merge_commit": "42fba87ad5c74f4dbefb4f133312f55b8d088fef",
             "diff_url": "https://github.com/gvago/oss-maintainer-demo/pull/13.diff",
             "patch_url": "https://github.com/gvago/oss-maintainer-demo/pull/13.patch",
@@ -315,7 +283,6 @@
             "state": "open",
             "base_branch": "main",
             "head_branch": "feat/csv-library",
-            "author": "gvago",
             "created_at": "2026-10-11T10:50:23Z",
             "updated_at": "2026-10-11T10:50:54Z",
             "merged_at": null,
@@ -328,8 +295,6 @@
               "\ud83d\udd50 Less than 10 minutes",
               "\ud83d\udfe1 Small blast radius"
             ],
-            "assignees": [],
-            "requested_reviewers": [],
             "merge_commit": "35f76959e3fdf2e0acc9eab8cb59572b4ec33835",
             "diff_url": "https://github.com/gvago/oss-maintainer-demo/pull/11.diff",
             "patch_url": "https://github.com/gvago/oss-maintainer-demo/pull/11.patch",
@@ -355,7 +320,6 @@
           "head_ref": null,
           "base_ref": null,
           "html_url": null,
-          "author": "gvago",
           "is_draft": false,
           "url": "https://github.com/gvago/oss-maintainer-demo/pull/9",
           "source_branch": "feat/document-identity",
@@ -369,8 +333,6 @@
             "\ud83d\udd50 Less than 10 minutes",
             "\ud83d\udfe1 Small blast radius"
           ],
-          "assignees": [],
-          "requested_reviewers": [],
           "merged_at": null,
           "closed_at": null,
           "base_commit": "e565ba08587117166a9ba46e00d211879fc55857",
@@ -409,11 +371,8 @@
           {
             "id": 6108246119,
             "body": "<h3>PR Summary by Qodo</h3>\n\nAdd opt-in fragment-free URL identity\n\n<code>\u2728 Enhancement</code> <code>\ud83e\uddea Tests</code> <code>\ud83d\udd50 Less than 10 minutes</code>\n\n<img src=\"https://www.qodo.ai/wp-content/uploads/2025/11/light-grey-line.svg\" height=\"10%\" alt=\"Grey Divider\">\n\n<details>\n<summary>AI Description</summary>\n\n<dl>\n<dd>\n<br/>\n\n><pre>\n>\u2022 Add optional fragment stripping to shared URL normalization for document-level identity.\n>\u2022 Preserve fragment-aware behavior by default, leaving exporter and CLI behavior unchanged.\n>\u2022 Test both opt-in stripping and default preservation.\n></pre>\n\n</dd>\n</dl>\n\n</details>\n\n<details>\n<summary>Diagram</summary>\n\n<dl>\n<dd>\n\n<br/>\n\n```mermaid\ngraph TD\n  Caller[\"Library caller\"] --> Normalizer[\"URL normalizer\"] --> Choice{\"Strip fragment?\"} -->|Yes| Document[\"Document identity\"]\n  Choice -->|No| Full[\"Fragment-aware identity\"]\n```\n\n</dd>\n</dl>\n\n</details>\n\n\n\n\n<details>\n<summary>High-Level Assessment</summary>\n\n<dl>\n<dd>\n\n<br/>\n\n>Keep the option in the shared normalizer: it reuses existing validation and normalization while preserving current callers&#x27; defaults. Stripping fragments separately in each consumer would duplicate identity logic.\n\n</dd>\n</dl>\n\n</details>\n\n<details>\n<summary> Files changed (2) <code> +6 / -2 </code> </summary>\n\n<dl>\n<dd>\n\n<br/>\n\n<details>\n<summary>Enhancement (1) <code> +2 / -2 </code></summary>\n\n<dl>\n<dd>\n\n<details>\n<summary>urls.py<code>Add optional fragment stripping to URL normalization</code> <code>+2/-2</code></summary>\n\n<br/>\n\n>Add optional fragment stripping to URL normalization\n>\n><pre>\n>\u2022 Adds a keyword-only strip_fragment option that omits the fragment from the normalized result when enabled. The default remains false, preserving existing URL identities.\n></pre>\n>\n><a href='https://github.com/gvago/oss-maintainer-demo/pull/9/files#diff-ba04d24c2c6d5f5914cc76ec7aacfaf3f1e98c7d1880711eacb1ebaca19e7e6c'>bookmarks/urls.py</a>\n\n</details>\n\n</dd>\n</dl>\n\n</details>\n\n<details>\n<summary>Tests (1) <code> +4 / -0 </code></summary>\n\n<dl>\n<dd>\n\n<details>\n<summary>test_bookmarks.py<code>Cover opt-in and default fragment behavior</code> <code>+4/-0</code></summary>\n\n<br/>\n\n>Cover opt-in and default fragment behavior\n>\n><pre>\n>\u2022 Adds assertions that opting in removes a fragment and that an ordinary normalization call preserves it.\n></pre>\n>\n><a href='https://github.com/gvago/oss-maintainer-demo/pull/9/files#diff-7b85c398b87e22aab872b0c8802b2ed0c9d39bf0586095514f7f871c6bde71d9'>tests/test_bookmarks.py</a>\n\n</details>\n\n</dd>\n</dl>\n\n</details>\n\n</dd>\n</dl>\n\n</details>",
-            "author": "qodo-for-gvago[bot]",
             "created_at": "2026-10-11T10:50:39Z",
             "commenter": {
-              "external_id": "309654641",
-              "login": "qodo-for-gvago[bot]",
               "is_bot": true
             },
             "url": "https://github.com/gvago/oss-maintainer-demo/pull/9#issuecomment-6108246119",
@@ -426,11 +385,8 @@
           {
             "id": 6108247698,
             "body": "\n<h3>Code Review by Qodo</h3>\n<code>\ud83d\udc1e Bugs (0)</code>  <code>\ud83d\udcd8 Rule violations (0)</code>  <code>\ud83d\udcce Requirement gaps (0)</code>\n\n<img src=\"https://www.qodo.ai/wp-content/uploads/2025/11/light-grey-line.svg\" height=\"10%\" alt=\"Grey Divider\">\n\n<img src=\"https://www.qodo.ai/wp-content/uploads/2025/06/qodo-anteater.svg\" width=\"20%\">\n\n<h3>Great, no issues found!</h3>\nQodo reviewed your code and found no material issues that require review\n\n<img src=\"https://www.qodo.ai/wp-content/uploads/2025/11/light-grey-line.svg\" height=\"10%\" alt=\"Grey Divider\">\n\n\n<!-- https://github.com/gvago/oss-maintainer-demo/commit/ddb9ea26e5f16da5074123c0b8e4ad4ccd92b96e -->\n\n<a href=\"https://www.qodo.ai\"><img src=\"https://www.qodo.ai/wp-content/uploads/2025/03/qodo-logo.svg\" width=\"80\" alt=\"Qodo Logo\"></a>",
-            "author": "qodo-for-gvago[bot]",
             "created_at": "2026-10-11T10:50:51Z",
             "commenter": {
-              "external_id": "309654641",
-              "login": "qodo-for-gvago[bot]",
               "is_bot": true
             },
             "url": "https://github.com/gvago/oss-maintainer-demo/pull/9#issuecomment-6108247698",
@@ -443,11 +399,8 @@
           {
             "id": 6108329455,
             "body": "qodo: Compare this PR with https://github.com/gvago/oss-maintainer-demo/pull/10. Are they duplicate implementations or complementary changes? Base the answer on their intended behavior, actual diffs and tests, not titles. Explain whether both should be merged. Also identify which open issues this library-only change addresses fully versus partially. Read-only analysis; do not close or modify anything.",
-            "author": "gvago",
             "created_at": "2026-10-11T11:01:27Z",
             "commenter": {
-              "external_id": "157597376",
-              "login": "gvago",
               "is_bot": false
             },
             "url": "https://github.com/gvago/oss-maintainer-demo/pull/9#issuecomment-6108329455",
@@ -460,11 +413,8 @@
           {
             "id": 6108332289,
             "body": "> qodo: Compare this PR with https://github.com/gvago/oss-maintainer-demo/pull/10. Are they duplicate implementations or complementary changes? Base the answer on their intended behavior, actual diffs and tests, not titles. Explain whether both should be merged. Also identify which open issues this library-only change addresses fully versus partially. Read-only analysis; do not close or modify anything.\n\nI can analyze this PR, but I can\u2019t inspect the linked PR 10 from the available repository context; its diff, tests, and issue description were not provided. Therefore I can\u2019t reliably classify the two implementations as duplicates or complementary, or make a definitive merge recommendation.\n\n### What this PR actually changes\n\n- Adds `normalize_url(..., strip_fragment=False)` in `bookmarks/urls.py`.\n- With `strip_fragment=True`, fragments are removed while scheme, host, path, and query remain intact.\n- The default remains fragment-preserving, so existing URL identity behavior is unchanged.\n- Adds focused tests for both modes in `tests/test_bookmarks.py`.\n- `export_json()` and the CLI still call `normalize_url()` with the default, so exports and CLI deduplication remain fragment-sensitive.\n\n### Scope against likely issue types\n\n- **Optional fragment-insensitive normalization API:** addressed fully; implementation and direct regression tests are present.\n- **Fragment-insensitive export or CLI deduplication:** addressed only partially\u2014or not at the behavior level. No caller opts into `strip_fragment=True`, and there are no exporter/CLI tests demonstrating fragment-insensitive deduplication.\n- **Query preservation and existing HTTP(S) validation:** this change preserves those behaviors, but it does not broaden their coverage beyond the existing tests.\n\nThe supplied current review has no open findings, so there are no numbered Qodo findings or issue catalog entries to classify as fully or partially addressed. For a definitive PR 10 comparison and merge decision, its actual diff and tests need to be included; based on this PR alone, it should merge alongside PR 10 only if PR 10 wires fragment-insensitive identity into a consumer, rather than reimplementing the same helper change.",
-            "author": "qodo-for-gvago[bot]",
             "created_at": "2026-10-11T11:01:49Z",
             "commenter": {
-              "external_id": "309654641",
-              "login": "qodo-for-gvago[bot]",
               "is_bot": true
             },
             "url": "https://github.com/gvago/oss-maintainer-demo/pull/9#issuecomment-6108332289",
@@ -493,7 +443,6 @@
           "head_ref": null,
           "base_ref": null,
           "html_url": null,
-          "author": "gvago",
           "is_draft": false,
           "url": "https://github.com/gvago/oss-maintainer-demo/pull/10",
           "source_branch": "feat/ignore-section-anchor",
@@ -507,8 +456,6 @@
             "\ud83d\udd50 Less than 10 minutes",
             "\ud83d\udfe1 Small blast radius"
           ],
-          "assignees": [],
-          "requested_reviewers": [],
           "merged_at": null,
           "closed_at": null,
           "base_commit": "e565ba08587117166a9ba46e00d211879fc55857",
@@ -547,11 +494,8 @@
           {
             "id": 6108246525,
             "body": "<h3>PR Summary by Qodo</h3>\n\nAdd opt-in fragment-free URL normalization\n\n<code>\u2728 Enhancement</code> <code>\ud83e\uddea Tests</code> <code>\ud83d\udd50 Less than 10 minutes</code>\n\n<img src=\"https://www.qodo.ai/wp-content/uploads/2025/11/light-grey-line.svg\" height=\"10%\" alt=\"Grey Divider\">\n\n<details>\n<summary>AI Description</summary>\n\n<dl>\n<dd>\n<br/>\n\n><pre>\n>\u2022 Allow callers to ignore URL fragments so links to different sections can share an identity.\n>\u2022 Preserve fragment-aware normalization by default, leaving existing exports unchanged.\n>\u2022 Test both opt-in stripping and default preservation.\n></pre>\n\n</dd>\n</dl>\n\n</details>\n\n<details>\n<summary>Diagram</summary>\n\n<dl>\n<dd>\n\n<br/>\n\n```mermaid\ngraph TD\nC[\"URL consumers\"] --> N[\"normalize_url\"] --> V[\"Validate HTTP(S)\"] --> D{\"Strip fragment?\"} --> K[\"Keep fragment\"] --> I[\"Normalized identity\"]\nD --> O[\"Remove fragment\"] --> I\n```\n\n</dd>\n</dl>\n\n</details>\n\n\n\n\n<details>\n<summary>High-Level Assessment</summary>\n\n<dl>\n<dd>\n\n<br/>\n\n>Keep the opt-in switch in the shared identity helper. Stripping fragments unconditionally would change existing behavior, while doing so only in the exporter would duplicate URL-identity rules. Consumers must explicitly pass the option; this PR does not change export deduplication.\n\n</dd>\n</dl>\n\n</details>\n\n<details>\n<summary> Files changed (2) <code> +7 / -2 </code> </summary>\n\n<dl>\n<dd>\n\n<br/>\n\n<details>\n<summary>Enhancement (1) <code> +3 / -2 </code></summary>\n\n<dl>\n<dd>\n\n<details>\n<summary>urls.py<code>Add optional fragment stripping to shared URL normalization</code> <code>+3/-2</code></summary>\n\n<br/>\n\n>Add optional fragment stripping to shared URL normalization\n>\n><pre>\n>\u2022 Adds a keyword-only strip_fragment argument that omits the fragment from the normalized URL when enabled. The default retains existing fragment-aware identity.\n></pre>\n>\n><a href='https://github.com/gvago/oss-maintainer-demo/pull/10/files#diff-ba04d24c2c6d5f5914cc76ec7aacfaf3f1e98c7d1880711eacb1ebaca19e7e6c'>bookmarks/urls.py</a>\n\n</details>\n\n</dd>\n</dl>\n\n</details>\n\n<details>\n<summary>Tests (1) <code> +4 / -0 </code></summary>\n\n<dl>\n<dd>\n\n<details>\n<summary>test_bookmarks.py<code>Cover opt-in and default fragment identity</code> <code>+4/-0</code></summary>\n\n<br/>\n\n>Cover opt-in and default fragment identity\n>\n><pre>\n>\u2022 Adds assertions that the new option removes a fragment and that a call without the option preserves it.\n></pre>\n>\n><a href='https://github.com/gvago/oss-maintainer-demo/pull/10/files#diff-7b85c398b87e22aab872b0c8802b2ed0c9d39bf0586095514f7f871c6bde71d9'>tests/test_bookmarks.py</a>\n\n</details>\n\n</dd>\n</dl>\n\n</details>\n\n</dd>\n</dl>\n\n</details>",
-            "author": "qodo-for-gvago[bot]",
             "created_at": "2026-10-11T10:50:41Z",
             "commenter": {
-              "external_id": "309654641",
-              "login": "qodo-for-gvago[bot]",
               "is_bot": true
             },
             "url": "https://github.com/gvago/oss-maintainer-demo/pull/10#issuecomment-6108246525",
@@ -564,11 +508,8 @@
           {
             "id": 6108250804,
             "body": "<h3>Code Review by Qodo</h3>\n\n<code>\ud83d\udc1e Bugs (0)</code>  <code>\ud83d\udcd8 Rule violations (0)</code>  <code>\ud83d\udcce Requirement gaps (1)</code>  <code>\ud83d\udcdc Skill insights (0)</code>\n\n<img src=\"https://www.qodo.ai/wp-content/uploads/2025/11/light-grey-line.svg\" height=\"10%\" alt=\"Grey Divider\">\n\n<br/>\n\n<img src=\"https://img.shields.io/badge/High-CE2C31?style=flat-square\" height=\"20px\" alt=\"Action required\">\n\n<details>\n<summary>  1.  Saved section links remain separate <code>\ud83d\udd34 High</code> <code>\ud83d\udcce Requirement gap</code> <code>\u2261 Correctness</code></summary>\n\n<br/>\n\n> <details open>\n><summary>Description</summary>\n><br/>\n>\n><pre>\n><b><i>export_json</i></b> always calls <b><i>normalize_url</i></b> without enabling <b><i>strip_fragment</i></b>, so the new\n>fragment-insensitive behavior is unavailable through the saved-link export path. When callers save\n>URLs such as <b><i>https://example.com/a#one</i></b> and <b><i>https://example.com/a#two</i></b>, the JSON and CLI flows\n>provide no opt-in and keep both fragment-bearing entries distinct.\n></pre>\n></details>\n\n> <details open>\n><summary>Code</summary>\n><br/>\n>\n><code>[bookmarks/urls.py[4]](https://github.com/gvago/oss-maintainer-demo/pull/10/files#diff-ba04d24c2c6d5f5914cc76ec7aacfaf3f1e98c7d1880711eacb1ebaca19e7e6cR4-R4)</code>\n>\n>```diff\n>+def normalize_url(value: str, *, strip_fragment: bool = False) -> str:\n>```\n></details>\n\n> <details>\n><summary>Evidence</summary>\n><br/>\n>\n><pre>\n><b><i>bookmarks/urls.py</i></b> adds <b><i>strip_fragment</i></b> with a default of <b><i>False</i></b> and removes fragments only when\n>explicitly enabled, but <b><i>bookmarks/exports.py</i></b> always calls <b><i>normalize_url(url)</i></b> without that\n>option. <b><i>bookmarks/__main__.py</i></b> exposes no corresponding export or CLI option, so the documented\n>JSON and CLI paths cannot use fragment-insensitive identity for URLs that differ only by hashes.\n></pre>\n>\n> <code>[Optional fragment-insensitive saved-link collapsing](https://github.com/gvago/oss-maintainer-demo/issues/4)</code>\n> <code>[bookmarks/urls.py\\[4-20\\]](https://github.com/gvago/oss-maintainer-demo/blob/67a58c07cb73721b1d8ce0b04742e185a1fd7712/bookmarks/urls.py/#L4-L20)</code>\n> <code>[bookmarks/exports.py\\[6-8\\]](https://github.com/gvago/oss-maintainer-demo/blob/67a58c07cb73721b1d8ce0b04742e185a1fd7712/bookmarks/exports.py/#L6-L8)</code>\n> <code>[bookmarks/__main__.py\\[7-11\\]](https://github.com/gvago/oss-maintainer-demo/blob/67a58c07cb73721b1d8ce0b04742e185a1fd7712/bookmarks/__main__.py/#L7-L11)</code>\n> <code>[bookmarks/urls.py\\[4-4\\]](https://github.com/gvago/oss-maintainer-demo/blob/67a58c07cb73721b1d8ce0b04742e185a1fd7712/bookmarks/urls.py/#L4-L4)</code>\n> <code>[bookmarks/urls.py\\[20-21\\]](https://github.com/gvago/oss-maintainer-demo/blob/67a58c07cb73721b1d8ce0b04742e185a1fd7712/bookmarks/urls.py/#L20-L21)</code>\n> <code>[bookmarks/__main__.py\\[7-15\\]](https://github.com/gvago/oss-maintainer-demo/blob/67a58c07cb73721b1d8ce0b04742e185a1fd7712/bookmarks/__main__.py/#L7-L15)</code>\n> <code>[README.md\\[19-20\\]](https://github.com/gvago/oss-maintainer-demo/blob/67a58c07cb73721b1d8ce0b04742e185a1fd7712/README.md/#L19-L20)</code>\n></details>\n\n> <details>\n><summary>Agent prompt</summary>\n><br/>\n>\n>```\n>The issue below was found during a code review. Follow the provided context and guidance below and implement a solution\n>\n>## Issue description\n>The PR adds fragment-insensitive normalization only to the low-level helper, while `export_json` and the CLI always use the default fragment-preserving behavior. Saving URLs that differ only by hash fragments therefore still produces separate entries when fragment-insensitive mode is intended.\n>\n>## Fix Focus Areas\n>- bookmarks/urls.py[4-20]\n>- bookmarks/urls.py[4-4]\n>- bookmarks/exports.py[6-8]\n>- bookmarks/__main__.py[7-11]\n>- bookmarks/__main__.py[7-15]\n>- tests/test_bookmarks.py[32-36]\n>- tests/test_bookmarks.py[19-21]\n>\n>## Recommended Fix\n>Add an explicit opt-in parameter to `export_json` and expose a corresponding CLI flag or caller interface, then pass the enabled value through to `normalize_url(..., strip_fragment=True)`. Add export-path regression tests proving that URLs with different fragments collapse into one entry when enabled, while the default path continues preserving distinct fragments.\n>```\n> <code>\u24d8 Copy this prompt and use it to remediate the issue with your preferred AI generation tools</code>\n></details>\n\n[Dismiss \u2197](https://app.qodost.st.qodo.ai/findings/8b509365-ec6b-49a3-a232-54fb71f24b57?action=dismiss&origin=git) | [View \u2197](https://app.qodost.st.qodo.ai/findings/8b509365-ec6b-49a3-a232-54fb71f24b57)\n\n<hr/>\n</details>\n\n\n<br/>\n\n<img src=\"https://img.shields.io/badge/Medium-E36209?style=flat-square\" height=\"20px\" alt=\"Remediation recommended\">\n\n_No findings for this group_\n\n<br/>\n\n<img src=\"https://img.shields.io/badge/Low-D4A72C?style=flat-square\" height=\"20px\" alt=\"Informational\">\n\n_No findings for this group_\n\n\n<img src=\"https://www.qodo.ai/wp-content/uploads/2025/11/light-grey-line.svg\" height=\"10%\" alt=\"Grey Divider\">\n\n\n<!-- qodo-context:start -->\n<details><summary><strong>Context sources</strong></summary>\n\n<div>&#x2705; Tickets: <a href=\"https://github.com/gvago/oss-maintainer-demo/issues/4\"><code>\ud83c\udfab Collapse saved links that only differ after the hash</code></a></div>\n<div>&#x2705; Compliance rules (platform): <a href=\"https://app.qodost.st.qodo.ai/rules?state=active&amp;scopes=/gvago/oss-maintainer-demo/\"><code>6 rules</code></a></div>\n<div>&#x2705; REVIEW.md</div>\n<div>Review mode: <code>Auto: \ud83d\ude80 Fast</code>: Localized optional URL normalization change with preserved defaults and focused tests.</div>\n<!-- qodo-context:end -->\n</details>\n\n<img src=\"https://www.qodo.ai/wp-content/uploads/2025/11/light-grey-line.svg\" height=\"10%\" alt=\"Grey Divider\">\n\n\n<!-- https://github.com/gvago/oss-maintainer-demo/commit/67a58c07cb73721b1d8ce0b04742e185a1fd7712 -->\n\n<a href=\"https://www.qodo.ai\"><img src=\"https://www.qodo.ai/wp-content/uploads/2025/03/qodo-logo.svg\" width=\"80\" alt=\"Qodo Logo\"></a>",
-            "author": "qodo-for-gvago[bot]",
             "created_at": "2026-10-11T10:51:16Z",
             "commenter": {
-              "external_id": "309654641",
-              "login": "qodo-for-gvago[bot]",
               "is_bot": true
             },
             "url": "https://github.com/gvago/oss-maintainer-demo/pull/10#issuecomment-6108250804",
@@ -581,11 +522,8 @@
           {
             "id": 4241291758,
             "body": "<img src=\"https://img.shields.io/badge/High-CE2C31?style=flat-square\" height=\"20px\" alt=\"Action required\">\n\n1\\. Saved section links remain separate <code>\ud83d\udcce Requirement gap</code> <code>\u2261 Correctness</code>\n\n<pre>\n<b><i>export_json</i></b> always calls <b><i>normalize_url</i></b> without enabling <b><i>strip_fragment</i></b>, so the new\nfragment-insensitive behavior is unavailable through the saved-link export path. When callers save\nURLs such as <b><i>https://example.com/a#one</i></b> and <b><i>https://example.com/a#two</i></b>, the JSON and CLI flows\nprovide no opt-in and keep both fragment-bearing entries distinct.\n</pre>\n\n\n<details>\n<summary><strong>Agent Prompt</strong></summary>\n\n```\n## Issue description\nThe PR adds fragment-insensitive normalization only to the low-level helper, while `export_json` and the CLI always use the default fragment-preserving behavior. Saving URLs that differ only by hash fragments therefore still produces separate entries when fragment-insensitive mode is intended.\n\n## Fix Focus Areas\n- bookmarks/urls.py[4-20]\n- bookmarks/urls.py[4-4]\n- bookmarks/exports.py[6-8]\n- bookmarks/__main__.py[7-11]\n- bookmarks/__main__.py[7-15]\n- tests/test_bookmarks.py[32-36]\n- tests/test_bookmarks.py[19-21]\n\n## Recommended Fix\nAdd an explicit opt-in parameter to `export_json` and expose a corresponding CLI flag or caller interface, then pass the enabled value through to `normalize_url(..., strip_fragment=True)`. Add export-path regression tests proving that URLs with different fragments collapse into one entry when enabled, while the default path continues preserving distinct fragments.\n```\n\n<code>\u24d8 Copy this prompt and use it to remediate the issue with your preferred AI generation tools</code>\n</details>\n\n[Dismiss \u2197](https://app.qodost.st.qodo.ai/findings/8b509365-ec6b-49a3-a232-54fb71f24b57?action=dismiss&origin=git) | [View \u2197](https://app.qodost.st.qodo.ai/findings/8b509365-ec6b-49a3-a232-54fb71f24b57)",
-            "author": "qodo-for-gvago[bot]",
             "created_at": "2026-10-11T10:51:17Z",
             "commenter": {
-              "external_id": "309654641",
-              "login": "qodo-for-gvago[bot]",
               "is_bot": true
             },
             "url": "https://github.com/gvago/oss-maintainer-demo/pull/10#discussion_r4241291758",
@@ -603,11 +541,8 @@
             "path": "bookmarks/urls.py",
             "line": null,
             "side": "RIGHT",
-            "author": "qodo-for-gvago[bot]",
             "created_at": "2026-10-11T10:51:17Z",
             "commenter": {
-              "external_id": "309654641",
-              "login": "qodo-for-gvago[bot]",
               "is_bot": true
             },
             "url": "https://github.com/gvago/oss-maintainer-demo/pull/10#discussion_r4241291758",
@@ -755,9 +690,6 @@
               "updated_at": "2026-10-11T10:48:25Z",
               "closed_at": "2026-10-11T10:48:24Z",
               "merged_at": "2026-10-11T10:48:24Z",
-              "author_login": "gvago",
-              "assignees_login": null,
-              "requested_reviewers_login": null,
               "labels": null,
               "base_branch": "main",
               "head_branch": "fix/default-ports",
@@ -793,6 +725,42 @@
       },
       "result": {
         "suggestions": []
+      }
+    },
+    {
+      "tool": "get-pr-review-findings",
+      "arguments": {
+        "pr_url": "https://github.com/gvago/oss-maintainer-demo/pull/10"
+      },
+      "result": {
+        "pr_url": "https://github.com/gvago/oss-maintainer-demo/pull/10",
+        "git_provider": null,
+        "review_session": {
+          "run_id": 64859,
+          "status": "completed",
+          "commit_sha": "67a58c07cb73721b1d8ce0b04742e185a1fd7712",
+          "started_at": "2026-10-11T10:50:26.967914Z",
+          "git_provider": "github",
+          "summary_comment_id": "6108250804"
+        },
+        "findings": [
+          {
+            "id": "8b509365-ec6b-49a3-a232-54fb71f24b57",
+            "title": "Saved section links remain separate",
+            "description": "`export_json` always calls `normalize_url` without enabling `strip_fragment`, so the new fragment-insensitive behavior is unavailable through the saved-link export path. When callers save URLs such as `https://example.com/a#one` and `https://example.com/a#two`, the JSON and CLI flows provide no opt-in and keep both fragment-bearing entries distinct.",
+            "category": "Correctness",
+            "action_level": "action_required",
+            "attribution_status": "pending",
+            "review_source": null,
+            "git_sha": "67a58c07cb73721b1d8ce0b04742e185a1fd7712",
+            "finding_source": "ComplianceTicketRule",
+            "review_run_id": 64859,
+            "comment_id": "6108250804",
+            "inline_comment_id": "gh1:PRRT_kwDOVEtSis6rM1tV:4241291758",
+            "created_at": "2026-10-11T10:51:19.066933Z"
+          }
+        ],
+        "finding_count": 1
       }
     }
   ]

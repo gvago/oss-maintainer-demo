@@ -6,6 +6,8 @@ Discover available Qodo managed read tools; choose targeted questions, not an ex
 Start with live open issues and PRs (state=open). Compare candidate duplicates by intent and
 actual diffs, distinguish complementary dependencies, link issues and partial implementations.
 Find prior fixes using merged history, then read current code when a decision needs it.
+Never cite a specific Qodo finding or review status unless you retrieved that PR through
+get-pr-review-findings during this run; review summaries in PR metadata are not that evidence.
 Use current Qodo review findings on relevant PRs: completed exact-head vs stale review,
 open blockers vs implemented findings, guideline insights vs generic bugs. Use native
 blast-radius/time labels for ordering. Retrieve past feedback for relevant files and semantic

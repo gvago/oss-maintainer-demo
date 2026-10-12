@@ -68,8 +68,8 @@
         "PR #11 head_commit=b9dab92614d3b0c4e7fb61531110d54bf10e6694",
         "PR #11 'Closes #5 ... CLI wiring is a separate change'; PR #12 'Depends on #11 ... contains only CLI wiring. Closes #6'"
       ],
-      "uncertainty": "None on ordering. Not proposing a rebase; GitHub will retarget #12 to main once #11 merges.",
-      "draft": "Confirmed complementary: #12 is stacked on feat/csv-library and its base commit is #11's head, so its diff is CLI-only. Review order is #11 (library, Closes #5) then #12 (--format csv, Closes #6). No rebase needed \u2014 #12 retargets to main once #11 lands.",
+      "uncertainty": "Ordering is established. After #11 merges, verify the base and retarget #12 to main if necessary; automatic retargeting is not established.",
+      "draft": "These changes are complementary. Review #11 (CSV library) first, then verify and retarget #12 to main for CLI review. No automatic rebase or retarget is performed.",
       "pr_heads": {
         "https://github.com/gvago/oss-maintainer-demo/pull/11": "b9dab92614d3b0c4e7fb61531110d54bf10e6694",
         "https://github.com/gvago/oss-maintainer-demo/pull/12": "41bd59c16d4a37fecf3367e24119e8c6b32c3eb7"
@@ -150,5 +150,5 @@
     }
   ],
   "gaps": [],
-  "coverage": "7 open PRs \u00b7 6 open issues \u00b7 Observed 2026-10-12T07:42:41.629392+00:00"
+  "coverage": "8 open PRs \u00b7 6 open issues \u00b7 Observed 2026-10-12T07:42:41.629392+00:00"
 }

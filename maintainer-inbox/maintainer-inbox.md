@@ -1,6 +1,6 @@
 # Maintainer Inbox
 
-<p>7 open PRs · 6 open issues · Observed 2026-10-12T07:42:41.629392+00:00</p>
+<p>8 open PRs · 6 open issues · Observed 2026-10-12T07:42:41.629392+00:00</p>
 
 <p>Six open issues, seven open PRs. #9 and #10 are byte-equivalent `strip_fragment` implementations serving duplicate issues #3/#4 — keep one, close the other. #11→#12 is a real stack (#12 is based on `feat/csv-library`), not a duplicate. Issue #8 (:443 collapsing) is already fixed on main by merged PR #2 with regression coverage. PR #12&#x27;s review is stale against its head but both findings are implemented. PRs #26/#27 are seeded experiment/control — keep unmerged.</p>
 
@@ -84,10 +84,10 @@ Evidence:
 <p>PR #11 &#x27;Closes #5 ... CLI wiring is a separate change&#x27;; PR #12 &#x27;Depends on #11 ... contains only CLI wiring. Closes #6&#x27;</p>
 
 Uncertainty:
-<p>None on ordering. Not proposing a rebase; GitHub will retarget #12 to main once #11 merges.</p>
+<p>Ordering is established. After #11 merges, verify the base and retarget #12 to main if necessary; automatic retargeting is not established.</p>
 
 Draft reply:
-<p>Confirmed complementary: #12 is stacked on feat/csv-library and its base commit is #11&#x27;s head, so its diff is CLI-only. Review order is #11 (library, Closes #5) then #12 (--format csv, Closes #6). No rebase needed — #12 retargets to main once #11 lands.</p>
+<p>These changes are complementary. Review #11 (CSV library) first, then verify and retarget #12 to main for CLI review. No automatic rebase or retarget is performed.</p>
 
 Observed PR heads:
 <p>{&quot;https://github.com/gvago/oss-maintainer-demo/pull/11&quot;: &quot;b9dab92614d3b0c4e7fb61531110d54bf10e6694&quot;, &quot;https://github.com/gvago/oss-maintainer-demo/pull/12&quot;: &quot;41bd59c16d4a37fecf3367e24119e8c6b32c3eb7&quot;}</p>

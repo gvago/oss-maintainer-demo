@@ -2,6 +2,7 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
+import copy
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("inbox", ROOT / "tools/maintainer_inbox.py")
@@ -56,6 +57,30 @@ class InboxTests(unittest.TestCase):
         packet["actions"][0]["targets"] = ["https://github.com/other/repo/issues/1"]
         with self.assertRaises(ValueError):
             inbox.validate(packet)
+
+    def test_evidence_gate_rejects_filtered_capped_and_wrong_targets(self):
+        folder = ROOT / "maintainer-inbox"
+        packet = json.loads((folder / "maintainer-actions.json").read_text())
+        evidence = json.loads((folder / "evidence.json").read_text())
+        inbox.bind_evidence(packet, evidence)
+        for change in ["filtered", "capped", "head", "issue", "review", "history"]:
+            p, e = copy.deepcopy(packet), copy.deepcopy(evidence)
+            if change == "filtered":
+                e["calls"][0]["arguments"]["labels"] = ["bug"]
+            elif change == "capped":
+                call = next(c for c in e["calls"] if c["tool"] == "litegit-list-prs")
+                call["result"]["pull_requests"] *= 200
+            elif change == "head":
+                a = next(a for a in p["actions"] if a["pr_heads"])
+                a["pr_heads"][next(iter(a["pr_heads"]))] = "f" * 40
+            elif change == "issue":
+                p["actions"][0]["targets"] = [f"https://github.com/{p['repo']}/issues/999"]
+            elif change == "review":
+                e["calls"] = [c for c in e["calls"] if c["tool"] != "get-pr-review-findings"]
+            else:
+                e["calls"] = [c for c in e["calls"] if not c["tool"].startswith("pull-request-")]
+            with self.assertRaises(ValueError, msg=change):
+                inbox.bind_evidence(p, e)
 
     def test_duplicate_ids_are_rejected(self):
         packet = json.loads((ROOT / "maintainer-inbox/maintainer-actions.json").read_text())
