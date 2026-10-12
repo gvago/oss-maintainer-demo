@@ -23,7 +23,7 @@ def decode(text: str) -> dict:
     return value
 
 
-def validate(packet: dict) -> None:
+def validate(packet: dict, *, require_heads: bool = True) -> None:
     if not isinstance(packet.get("repo"), str) or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", packet["repo"]) or not isinstance(packet.get("summary"), str):
         raise ValueError("Missing repo/summary")
     if not isinstance(packet.get("actions"), list) or not isinstance(packet.get("gaps"), list):
@@ -44,7 +44,7 @@ def validate(packet: dict) -> None:
             prefix = f"https://github.com/{packet['repo']}/"
             if not isinstance(url, str) or not url.startswith(prefix) or not re.fullmatch(r"(?:issues|pull)/[1-9][0-9]*", url[len(prefix):]):
                 raise ValueError("Target outside repository or malformed")
-        if any("/pull/" in url and url not in action["pr_heads"] for url in action["targets"]):
+        if require_heads and any("/pull/" in url and url not in action["pr_heads"] for url in action["targets"]):
             raise ValueError("Missing observed PR head")
         for sha in action["pr_heads"].values():
             if not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha):
@@ -87,7 +87,7 @@ def bind_evidence(packet: dict, evidence: dict) -> None:
             raise ValueError("Missing or incomplete open backlog discovery")
     prs = next(c["result"]["pull_requests"] for c in reversed(calls) if c["tool"] == "litegit-list-prs" and c["arguments"] == {"repo": packet["repo"], "state": "open", "max_results": 200})
     issues = next(c["result"]["issues"] for c in reversed(calls) if c["tool"] == "litegit-list-issues" and c["arguments"] == {"repo": packet["repo"], "state": "open", "max_results": 200})
-    validate(packet)
+    validate(packet, require_heads=False)
     heads = {f"https://github.com/{packet['repo']}/pull/{p['number']}": p.get("head_sha", p.get("head_commit")) for p in prs}
     open_issues = {f"https://github.com/{packet['repo']}/issues/{i['number']}" for i in issues}
     for action in packet["actions"]:
@@ -96,6 +96,12 @@ def bind_evidence(packet: dict, evidence: dict) -> None:
         for url, sha in action["pr_heads"].items():
             if url not in heads or sha != heads[url]:
                 raise ValueError("Recommendation head differs from observed PR")
+        for url in action["targets"]:
+            if "/pull/" in url:
+                sha = heads.get(url)
+                if not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha):
+                    raise ValueError("Target PR has no valid observed head")
+                action["pr_heads"][url] = sha
     if not any(c["tool"] == "get-pr-review-findings" for c in calls):
         raise ValueError("No Qodo review context retrieved")
     if not any(c["tool"].startswith("pull-request-") for c in calls):
